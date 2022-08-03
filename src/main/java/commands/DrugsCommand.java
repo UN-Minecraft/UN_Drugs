@@ -9,9 +9,9 @@ import unmineraft.unitems.UNItems;
 import unmineraft.unitems.consumable.Drugs;
 
 public class DrugsCommand implements CommandExecutor {
-    private UNItems plugin;
+    private final UNItems plugin;
 
-    public void DrugsCommand(UNItems plugin){
+    public DrugsCommand(UNItems plugin){
         this.plugin = plugin;
     }
 
@@ -28,7 +28,7 @@ public class DrugsCommand implements CommandExecutor {
         if (message.equalsIgnoreCase("marihuana")){
             player.getInventory().addItem(Drugs.marihuana);
         } else {
-            player.sendMessage(ChatColor.DARK_PURPLE + "Elemento no reconocido");
+            player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento no reconocido");
         }
 
         return true;
