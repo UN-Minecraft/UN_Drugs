@@ -1,0 +1,7 @@
+name: UNItems
+version: '${project.version}'
+main: unmineraft.unitems.UNItems
+api-version: 1.18
+authors: [ ColchasGOD ]
+description: Manejo de items especiales para el servidor de Minecraft UN
+website: https://github.com/UN-Minecraft
