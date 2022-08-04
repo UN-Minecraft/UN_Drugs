@@ -7,48 +7,66 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import unmineraft.unitems.UNItems;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Drugs {
     protected static int TICKS_PER_SECOND = 20;
 
     private static String generalPath;
     protected static List<String> generalDescription;
+
+    public static  HashMap<String, LinkedList<PotionEffect>> effectsMap = new HashMap<>();
     public static HashMap<String, String> labelEffects = new HashMap<>();
     public static HashMap<String, Integer> effectsDuration = new HashMap<>();
 
-    protected static void updateMarihuanaConfig(FileConfiguration config){
+    // ITEMS
+    public static ItemStack marihuana;
+    public static ItemStack perico;
+    public static ItemStack LSD;
+
+    private static void updateDrugConfig(FileConfiguration config, String mapNameDrug, String pathNameDrug){
         // Label Effects
-        String plainText = config.getString(generalPath + ".marihuana.Label_Effects");
+        String plainText = config.getString(generalPath + "." + pathNameDrug + ".Label_Effects");
         String label = ChatColor.translateAlternateColorCodes('&', plainText);
 
-        labelEffects.put("Marihuana", label);
+        labelEffects.put(mapNameDrug, label);
 
         // Duration
-        int secondsDuration = Integer.parseInt(Objects.requireNonNull(config.getString(generalPath + ".marihuana.Duration")));
-        effectsDuration.put("Marihuana", secondsDuration * TICKS_PER_SECOND);
+        int secondsDuration = Integer.parseInt(Objects.requireNonNull(config.getString(generalPath + "." + pathNameDrug + ".Duration")));
+        effectsDuration.put(mapNameDrug, secondsDuration * TICKS_PER_SECOND);
+
+        // Effects
+        LinkedList<PotionEffect> auxListEffects = new LinkedList<>();
+
+        for (String effectTypes : config.getStringList(generalPath + "." + pathNameDrug + ".Effects")){
+            String[] effectTypeInfo = effectTypes.split(";");
+
+            int level = Integer.parseInt(effectTypeInfo[1]) - 1;
+            String nameEffect = effectTypeInfo[0];
+
+            PotionEffect temp = new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(nameEffect)), effectsDuration.get(mapNameDrug), level);
+            auxListEffects.push(temp);
+        }
+        effectsMap.put(mapNameDrug, auxListEffects);
     }
 
-    public static ItemStack marihuana;
-
-    protected static void createMarihuana(){
-        ItemStack item = new ItemStack(Material.SWEET_BERRIES, 1);
+    protected static ItemStack createItem(Material BaseItem, String displayName, String mapNameDrug){
+        ItemStack item = new ItemStack(BaseItem, 1);
         ItemMeta meta = item.getItemMeta();
 
-        meta.setDisplayName(ChatColor.DARK_GREEN + "Marihuana");
+        meta.setDisplayName(displayName);
 
         ArrayList<String> lore = new ArrayList<>();
 
         String line;
         for (int i=0; i<generalDescription.size(); i++){
             line = generalDescription.get(i);
-            line = ChatColor.translateAlternateColorCodes('&', line).replaceAll("%effectsDrug%", labelEffects.get("Marihuana"));
+            line = ChatColor.translateAlternateColorCodes('&', line).replaceAll("%effectsDrug%", labelEffects.get(mapNameDrug));
             lore.add(line);
         }
 
@@ -58,7 +76,8 @@ public class Drugs {
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         item.setItemMeta(meta);
-        marihuana = item;
+
+        return item;
     }
 
 
@@ -70,8 +89,11 @@ public class Drugs {
         generalDescription = config.getStringList(generalPath + ".General_Description");
 
         // Actualizacion de la configuracion de los items
-        updateMarihuanaConfig(config);
+        // PARAMS: Archivo conf, nombre para almacenar en los hashmaps, nombre en el archivo de config.yml
+        updateDrugConfig(config, "Marihuana", "marihuana");
+        updateDrugConfig(config, "Perico", "perico");
+        updateDrugConfig(config, "LSD", "LSD");
 
-        createMarihuana();
+        marihuana = createItem(Material.SWEET_BERRIES, ChatColor.DARK_GREEN + "Marihuana", "Marihuana");
     }
 }

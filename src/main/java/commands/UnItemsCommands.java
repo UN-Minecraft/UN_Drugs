@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import unmineraft.unitems.UNItems;
+import unmineraft.unitems.consumable.Drugs;
 
 public class UnItemsCommands implements CommandExecutor {
     private final UNItems plugin;
@@ -25,6 +26,9 @@ public class UnItemsCommands implements CommandExecutor {
         if (args[0].equalsIgnoreCase("reload")){
             plugin.reloadConfig();
             sender.sendMessage(ChatColor.GREEN + "El plugin a sido recargado correctamente");
+
+            Drugs.buildDrugs(plugin);
+
         } else {
             sender.sendMessage(ChatColor.RED + "El comando no ha sido reconocido");
             return false;

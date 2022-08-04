@@ -18,19 +18,10 @@ public class DrugsEvent implements Listener {
         if (event.getItem() != null){
             ItemStack item = event.getItem();
             Player player = event.getPlayer();
-            LinkedList<PotionEffect> effects = new LinkedList<>();
 
             // Si el jugador consume Marihuana
             if (Objects.equals(item.getItemMeta(), Drugs.marihuana.getItemMeta())){
-                Integer duration = Drugs.effectsDuration.get("Marihuana");
-
-                PotionEffect hunger = new PotionEffect(PotionEffectType.HUNGER, duration, 0);
-                PotionEffect regeneration = new PotionEffect(PotionEffectType.REGENERATION, duration, 1);
-
-                effects.push(hunger);
-                effects.push(regeneration);
-
-                player.addPotionEffects(effects);
+                player.addPotionEffects(Drugs.effectsMap.get("Marihuana"));
             }
 
             // Si el jugador consume perico
