@@ -1,0 +1,35 @@
+Config:
+  Drugs:
+    # La modificacion del "lore" de un item se basa en una estructura lineal, donde cada posicion de esta estructura
+    # representa una nueva linea, por ende, si desea que los elementos registrados vayan en una nueva linea, es necesario
+    # que los inserte a la lista de General_Description.
+    General_Description:
+      - "&r&5Este item es &c&lILEGAL&r&5, que no te atrapen con el"
+      - ""
+      - "&5Su consumo otorga: &8%effectsDrug%"
+    # Para el manejo de los efectos es necesario:
+    # 1. Al agregar efectos a un item ya existente es necesario que este, sea ingresado
+    #    teniendo en cuenta su referencia en el juego (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html)
+    #    en mayusculas, siguiendo la estructura:
+      #   - EFECTO;NIVEL_DEL_EFECTO
+    # 2. Una vez registrado el efecto debe incluirlo en el apartado de Label_Effects, para que este sea mostrado
+    #    en el cliente de manera correcta
+    marihuana:
+      Effects:
+        - HUNGER;1
+        - REGENERATION;2
+      Label_Effects: "Hambre y Regeneracion"
+      Duration: 60
+    perico:
+      Effects:
+        - SPEED;4
+        - WEAKNESS;1
+      Label_Effects: "Velocidad y Debilidad"
+      Duration: 50
+    LSD:
+      Effects:
+        - CONFUSION;3
+        - BLINDNESS;1
+        - INCREASE_DAMAGE;1
+      Label_Effects: "Mareo, Ceguera y Fuerza"
+      Duration: 40

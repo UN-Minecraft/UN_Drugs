@@ -22,8 +22,10 @@ public class DrugsEvent implements Listener {
 
             // Si el jugador consume Marihuana
             if (Objects.equals(item.getItemMeta(), Drugs.marihuana.getItemMeta())){
-                PotionEffect hunger = new PotionEffect(PotionEffectType.HUNGER, Drugs.DURATION_EFFECT_IN_SECONDS, 0);
-                PotionEffect regeneration = new PotionEffect(PotionEffectType.REGENERATION, Drugs.DURATION_EFFECT_IN_SECONDS, 1);
+                Integer duration = Drugs.effectsDuration.get("Marihuana");
+
+                PotionEffect hunger = new PotionEffect(PotionEffectType.HUNGER, duration, 0);
+                PotionEffect regeneration = new PotionEffect(PotionEffectType.REGENERATION, duration, 1);
 
                 effects.push(hunger);
                 effects.push(regeneration);

@@ -18,8 +18,9 @@ public class DrugsCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            String errorMessage = ChatColor.RED + " No puedes ejecutar comandos desde la consola";
+            String errorMessage = ChatColor.RED + "No puedes ejecutar comandos desde la consola";
             sender.sendMessage(this.plugin.name + errorMessage);
+            return false;
         }
 
         Player player = (Player) sender;

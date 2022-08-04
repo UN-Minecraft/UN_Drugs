@@ -2,21 +2,38 @@ package unmineraft.unitems.consumable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import unmineraft.unitems.UNItems;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 public class Drugs {
-    protected static String[] generalDescription = {ChatColor.GRAY + "Este item es " + ChatColor.RED + "ILEGAL" + ChatColor.GRAY + ", que no te atrapen con el",
-            ChatColor.GRAY + "Su consumo otorga: "};
-
     protected static int TICKS_PER_SECOND = 20;
 
-    public static int DURATION_EFFECT_IN_SECONDS = 60 * TICKS_PER_SECOND;
+    private static String generalPath;
+    protected static List<String> generalDescription;
+    public static HashMap<String, String> labelEffects = new HashMap<>();
+    public static HashMap<String, Integer> effectsDuration = new HashMap<>();
+
+    protected static void updateMarihuanaConfig(FileConfiguration config){
+        // Label Effects
+        String plainText = config.getString(generalPath + ".marihuana.Label_Effects");
+        String label = ChatColor.translateAlternateColorCodes('&', plainText);
+
+        labelEffects.put("Marihuana", label);
+
+        // Duration
+        int secondsDuration = Integer.parseInt(Objects.requireNonNull(config.getString(generalPath + ".marihuana.Duration")));
+        effectsDuration.put("Marihuana", secondsDuration * TICKS_PER_SECOND);
+    }
 
     public static ItemStack marihuana;
 
@@ -27,10 +44,14 @@ public class Drugs {
         meta.setDisplayName(ChatColor.DARK_GREEN + "Marihuana");
 
         ArrayList<String> lore = new ArrayList<>();
-        lore.add(generalDescription[0]);
 
-        String effects = generalDescription[1] + "Regeneracion y Hambre";
-        lore.add(effects);
+        String line;
+        for (int i=0; i<generalDescription.size(); i++){
+            line = generalDescription.get(i);
+            line = ChatColor.translateAlternateColorCodes('&', line).replaceAll("%effectsDrug%", labelEffects.get("Marihuana"));
+            lore.add(line);
+        }
+
         meta.setLore(lore);
 
         meta.addEnchant(Enchantment.LUCK, 1, false);
@@ -41,7 +62,16 @@ public class Drugs {
     }
 
 
-    public static void buildDrugs(){
+    public static void buildDrugs(UNItems plugin){
+        // Actualizacion de la informacion general
+        FileConfiguration config = plugin.getConfig();
+
+        generalPath = "Config.Drugs";
+        generalDescription = config.getStringList(generalPath + ".General_Description");
+
+        // Actualizacion de la configuracion de los items
+        updateMarihuanaConfig(config);
+
         createMarihuana();
     }
 }

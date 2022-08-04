@@ -9,3 +9,5 @@ website: https://github.com/UN-Minecraft
 commands:
   drug:
     description: Metodo de obtencion de los items de tipo droga
+  unitems:
+    description: Comando administrador del plugin
