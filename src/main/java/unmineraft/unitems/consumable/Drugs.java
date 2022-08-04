@@ -20,7 +20,7 @@ public class Drugs {
 
     public static ItemStack marihuana;
 
-    public static void createMarihuana(){
+    protected static void createMarihuana(){
         ItemStack item = new ItemStack(Material.SWEET_BERRIES, 1);
         ItemMeta meta = item.getItemMeta();
 
@@ -29,7 +29,7 @@ public class Drugs {
         ArrayList<String> lore = new ArrayList<>();
         lore.add(generalDescription[0]);
 
-        String effects = generalDescription[2] + "Regeneracion y Hambre";
+        String effects = generalDescription[1] + "Regeneracion y Hambre";
         lore.add(effects);
         meta.setLore(lore);
 
