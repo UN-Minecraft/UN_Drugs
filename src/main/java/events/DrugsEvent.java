@@ -25,8 +25,14 @@ public class DrugsEvent implements Listener {
             }
 
             // Si el jugador consume perico
+            if (Objects.equals(item.getItemMeta(), Drugs.perico.getItemMeta())){
+                player.addPotionEffects(Drugs.effectsMap.get("Perico"));
+            }
 
             // Si el jugador consume LSD
+            if (Objects.equals(item.getItemMeta(), Drugs.LSD.getItemMeta())){
+                player.addPotionEffects(Drugs.effectsMap.get("LSD"));
+            }
         }
     }
 }

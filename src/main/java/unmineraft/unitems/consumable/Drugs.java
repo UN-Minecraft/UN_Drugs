@@ -95,5 +95,7 @@ public class Drugs {
         updateDrugConfig(config, "LSD", "LSD");
 
         marihuana = createItem(Material.SWEET_BERRIES, ChatColor.DARK_GREEN + "Marihuana", "Marihuana");
+        perico = createItem(Material.SUGAR, ChatColor.LIGHT_PURPLE + "Perico", "Perico");
+        LSD = createItem(Material.PAPER, ChatColor.YELLOW + "LSD", "LSD");
     }
 }
