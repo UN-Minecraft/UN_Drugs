@@ -46,7 +46,7 @@ public final class UNItems extends JavaPlugin {
 
     public void eventsRegister(){
         PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new DrugsEvent(), this);
+        pluginManager.registerEvents(new DrugsEvent(this), this);
     }
 
     public void configRegister(){
