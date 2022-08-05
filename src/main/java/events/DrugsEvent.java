@@ -13,7 +13,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import unmineraft.unitems.UNItems;
 import unmineraft.unitems.consumable.Drugs;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.UUID;
@@ -21,7 +20,7 @@ import java.util.UUID;
 public class DrugsEvent implements Listener {
     private static UNItems plugin;
 
-    private static final HashMap<ItemMeta, Boolean> isConsumable = new HashMap<>();
+    private static final LinkedList<ItemMeta> isConsumable = new LinkedList<>();
     private static final LinkedList<UUID> itemCooldown = new LinkedList<>();
 
 
@@ -47,7 +46,7 @@ public class DrugsEvent implements Listener {
         if (event.getItem() != null){
             ItemStack item = event.getItem();
 
-            if (!isConsumable.get(item.getItemMeta())) return;
+            if (!isConsumable.contains(item.getItemMeta())) return;
             Player player = event.getPlayer();
             UUID playerID = player.getUniqueId();
             if ((Action.RIGHT_CLICK_AIR.equals(event.getAction()) || Action.LEFT_CLICK_BLOCK.equals(event.getAction())) && !itemCooldown.contains(playerID)){
@@ -84,8 +83,8 @@ public class DrugsEvent implements Listener {
     public DrugsEvent(UNItems plugin){
         DrugsEvent.plugin = plugin;
 
-        isConsumable.put(Drugs.marihuana.getItemMeta(), true);
-        isConsumable.put(Drugs.perico.getItemMeta(), true);
-        isConsumable.put(Drugs.LSD.getItemMeta(), true);
+        isConsumable.add(Drugs.marihuana.getItemMeta());
+        isConsumable.add(Drugs.perico.getItemMeta());
+        isConsumable.add(Drugs.LSD.getItemMeta());
     }
 }
