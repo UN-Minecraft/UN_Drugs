@@ -49,7 +49,7 @@ public class DrugsEvent implements Listener {
             if (!isConsumable.contains(item.getItemMeta())) return;
             Player player = event.getPlayer();
             UUID playerID = player.getUniqueId();
-            if ((Action.RIGHT_CLICK_AIR.equals(event.getAction()) || Action.LEFT_CLICK_BLOCK.equals(event.getAction())) && !itemCooldown.contains(playerID)){
+            if ((Action.RIGHT_CLICK_AIR.equals(event.getAction()) || Action.RIGHT_CLICK_BLOCK.equals(event.getAction())) && !itemCooldown.contains(playerID)){
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1.0F, 1.0F);
                 itemCooldown.add(player.getUniqueId());
 
