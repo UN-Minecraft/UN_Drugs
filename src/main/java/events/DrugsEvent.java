@@ -42,7 +42,7 @@ public class DrugsEvent implements Listener {
     }
 
     @EventHandler
-    protected void makeConsumable(PlayerInteractEvent event){
+    public void makeConsumable(PlayerInteractEvent event){
         if (event.getItem() != null){
             ItemStack item = event.getItem();
 
@@ -56,22 +56,23 @@ public class DrugsEvent implements Listener {
                 new BukkitRunnable(){
                     @Override
                     public void run(){
+                        if (player.getGameMode() == GameMode.SURVIVAL){
+                            if (item.getAmount() == 1){
+                                player.getInventory().removeItem(item);
+                                player.updateInventory();
+                                event.setCancelled(true);
+                            } else {
+                                item.setAmount(item.getAmount() - 1);
+                            }
+                        }
+
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1.0F, 1.0F);
+
                         startEffects(player, item);
                         new BukkitRunnable(){
                             @Override
                             public void run(){
                                 itemCooldown.remove(playerID);
-
-                                if (player.getGameMode() == GameMode.SURVIVAL){
-                                    if (item.getAmount() == 1){
-                                        player.getInventory().removeItem(item);
-                                        player.updateInventory();
-                                        event.setCancelled(true);
-                                    } else {
-                                        item.setAmount(item.getAmount() - 1);
-                                    }
-                                }
                             }
                         }.runTaskLater(plugin, 10);
                     }
