@@ -1,13 +1,13 @@
-name: UNItems
-version: '${project.version}'
-main: unmineraft.unitems.UNItems
+name: UNDrugs
+version: "${project.version}"
+main: unmineraft.undrugs.UNDrugs
 api-version: 1.18
-authors: [ ColchasGOD ]
+authors: [ColchasGOD]
 description: Manejo de items especiales para el servidor de Minecraft UN
 website: https://github.com/UN-Minecraft
 
 commands:
   drug:
     description: Metodo de obtencion de los items de tipo droga
-  unitems:
+  undrugs:
     description: Comando administrador del plugin

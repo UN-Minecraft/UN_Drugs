@@ -10,15 +10,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import unmineraft.unitems.UNItems;
-import unmineraft.unitems.consumable.Drugs;
+import unmineraft.undrugs.UNDrugs;
+import unmineraft.undrugs.consumable.Drugs;
 
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.UUID;
 
 public class DrugsEvent implements Listener {
-    private static UNItems plugin;
+    private static UNDrugs plugin;
 
     private static final LinkedList<ItemMeta> isConsumable = new LinkedList<>();
     private static final LinkedList<UUID> itemCooldown = new LinkedList<>();
@@ -81,7 +81,7 @@ public class DrugsEvent implements Listener {
         }
     }
 
-    public DrugsEvent(UNItems plugin){
+    public DrugsEvent(UNDrugs plugin){
         DrugsEvent.plugin = plugin;
 
         isConsumable.add(Drugs.marihuana.getItemMeta());

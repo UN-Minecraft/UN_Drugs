@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>unmineraft</groupId>
-    <artifactId>UNItems</artifactId>
-    <version>1.0.1</version>
+    <artifactId>UNDrugs</artifactId>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
-    <name>UNItems</name>
+    <name>UNDrugs</name>
 
     <description>Manejo de items especiales para el servidor de Minecraft UN</description>
     <properties>

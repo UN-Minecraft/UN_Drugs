@@ -1,18 +1,18 @@
-package unmineraft.unitems;
+package unmineraft.undrugs;
 
 import commands.DrugsCommand;
-import commands.UnItemsCommands;
+import commands.UnDrugsCommands;
 import events.DrugsEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import unmineraft.unitems.consumable.Drugs;
+import unmineraft.undrugs.consumable.Drugs;
 
 import java.io.File;
 
-public final class UNItems extends JavaPlugin {
+public final class UNDrugs extends JavaPlugin {
     public String pathConfig;
 
     PluginDescriptionFile pdfile = getDescription();
@@ -41,7 +41,7 @@ public final class UNItems extends JavaPlugin {
 
     public void commandRegister(){
         this.getCommand("drug").setExecutor(new DrugsCommand(this));
-        this.getCommand("unitems").setExecutor(new UnItemsCommands(this));
+        this.getCommand("undrugs").setExecutor(new UnDrugsCommands(this));
     }
 
     public void eventsRegister(){

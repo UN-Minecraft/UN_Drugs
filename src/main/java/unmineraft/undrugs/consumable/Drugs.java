@@ -1,4 +1,4 @@
-package unmineraft.unitems.consumable;
+package unmineraft.undrugs.consumable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import unmineraft.unitems.UNItems;
+import unmineraft.undrugs.UNDrugs;
 
 
 import java.util.*;
@@ -81,7 +81,7 @@ public class Drugs {
     }
 
 
-    public static void buildDrugs(UNItems plugin){
+    public static void buildDrugs(UNDrugs plugin){
         // Actualizacion de la informacion general
         FileConfiguration config = plugin.getConfig();
 

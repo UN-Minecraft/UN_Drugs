@@ -5,13 +5,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import unmineraft.unitems.UNItems;
-import unmineraft.unitems.consumable.Drugs;
+import unmineraft.undrugs.UNDrugs;
+import unmineraft.undrugs.consumable.Drugs;
 
-public class UnItemsCommands implements CommandExecutor {
-    private final UNItems plugin;
+public class UnDrugsCommands implements CommandExecutor {
+    private final UNDrugs plugin;
 
-    public UnItemsCommands(UNItems plugin){
+    public UnDrugsCommands(UNDrugs plugin){
         this.plugin = plugin;
     }
 
