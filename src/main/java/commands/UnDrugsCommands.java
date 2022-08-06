@@ -15,18 +15,24 @@ public class UnDrugsCommands implements CommandExecutor {
         this.plugin = plugin;
     }
 
+    /* Al tratarse de la administracion del plugin, unicamente se es accesible desde la consola del servidor */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
         if (sender instanceof Player) {
             String errorMessage = ChatColor.RED + " No puedes ejecutar este comando desde el cliente";
             sender.sendMessage(this.plugin.name + errorMessage);
             return false;
+        } else if (args.length == 0){
+            sender.sendMessage(ChatColor.DARK_PURPLE + "No se registra ninguna accion");
+            return false;
         }
 
+        /* El reinicio permite al plugin actualizar los cambios en la configuracion a traves de config.yml */
         if (args[0].equalsIgnoreCase("reload")){
             plugin.reloadConfig();
             sender.sendMessage(ChatColor.GREEN + "El plugin a sido recargado correctamente");
 
+            /* Para que se efectuen los cambios es necesario volver a construir las drogas */
             Drugs.buildDrugs(plugin);
 
         } else {

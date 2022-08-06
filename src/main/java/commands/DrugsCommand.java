@@ -18,12 +18,23 @@ public class DrugsCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        /*
+         * Se verifica que el emisor del comando sea un jugador, esto debido a que para la asignacion de una droga
+         * es necesario que el usuario que lo solicita permita el manejo del inventario. En caso tal de que se realize
+         * desde consola, este enviara un mensaje de error
+         */
         if (!(sender instanceof Player)) {
             String errorMessage = ChatColor.RED + "No puedes ejecutar comandos desde la consola";
             sender.sendMessage(this.plugin.name + errorMessage);
             return false;
         }
 
+        /*
+         * Se crea el jugador realizando la conversion de CommandSender -> Player.
+         * Los argumentos del comando se unen y se general mensaje registrado, posteriormente
+         * se verifica si alguno de los elementos existentes corresponde con el solicitado y en caso tal
+         * se le adicionara al jugador el item.
+         */
         Player player = (Player) sender;
         String message = String.join(" ", args);
         ItemStack selectedItem;

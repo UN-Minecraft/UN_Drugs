@@ -24,6 +24,8 @@ public class DrugsEvent implements Listener {
     private static final LinkedList<UUID> itemCooldown = new LinkedList<>();
 
 
+    /* La creacion de objetos toma de base objetos ya existentes, por ende si el objeto base no es consumible
+     * es necesaria la simulacion de dicha caracteristica a traves de esta funcion */
     private void startEffects(Player player, ItemStack item){
         // Si el jugador consume Marihuana
         if (Objects.equals(item.getItemMeta(), Drugs.marihuana.getItemMeta())){
@@ -43,17 +45,27 @@ public class DrugsEvent implements Listener {
 
     @EventHandler
     public void makeConsumable(PlayerInteractEvent event){
+        /* Validacion para no manejar objetos nulos */
         if (event.getItem() != null){
             ItemStack item = event.getItem();
 
+            /* En caso de que el objeto no este incluido en los items que tienen simulacion de consumo
+             * se ignora para que mantenga su comportamiento */
             if (!isConsumable.contains(item.getItemMeta())) return;
             Player player = event.getPlayer();
             UUID playerID = player.getUniqueId();
-            if ((Action.RIGHT_CLICK_AIR.equals(event.getAction()) || Action.RIGHT_CLICK_BLOCK.equals(event.getAction())) && !itemCooldown.contains(playerID)){
-                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1.0F, 1.0F);
-                itemCooldown.add(player.getUniqueId());
 
+            /* Verificacion de si se "interactua" con el la droga, esto atraves de la
+             * deteccion de acciones con el click derecho */
+            if ((Action.RIGHT_CLICK_AIR.equals(event.getAction()) || Action.RIGHT_CLICK_BLOCK.equals(event.getAction())) && !itemCooldown.contains(playerID)){
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1.0F, 1.0F); // Sonido: Accion de comer
+                itemCooldown.add(player.getUniqueId()); // Evita el consumo de mas de 1 unidad en menos de la ejecucion de la animacion
+
+                /* El manejo de eventos es asincrono, si queremos ejecutar codigo en el hilo principal
+                *  es necesario emplear esta funcion */
                 new BukkitRunnable(){
+                    /* Al simular el consumo es necesario manejar el stack, por esta razon validamos que el jugador
+                    *  se encuentre en el modo survival, en dicho caso al ser consumido se reduce el stack en 1 unidad */
                     @Override
                     public void run(){
                         if (player.getGameMode() == GameMode.SURVIVAL){
@@ -66,9 +78,9 @@ public class DrugsEvent implements Listener {
                             }
                         }
 
-                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1.0F, 1.0F);
+                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1.0F, 1.0F); // Sonido: Accion de eructar
 
-                        startEffects(player, item);
+                        startEffects(player, item); // Inicio de los efectos de la droga
                         new BukkitRunnable(){
                             @Override
                             public void run(){
@@ -84,6 +96,7 @@ public class DrugsEvent implements Listener {
     public DrugsEvent(UNDrugs plugin){
         DrugsEvent.plugin = plugin;
 
+        // Listado de las drogas que tienen simulacion de consumo
         isConsumable.add(Drugs.marihuana.getItemMeta());
         isConsumable.add(Drugs.perico.getItemMeta());
         isConsumable.add(Drugs.LSD.getItemMeta());

@@ -20,6 +20,7 @@ public class Drugs {
     private static String generalPath;
     protected static List<String> generalDescription;
 
+    // Mapeo de las diferentes caracteristicas de cada droga
     public static  HashMap<String, LinkedList<PotionEffect>> effectsMap = new HashMap<>();
     public static HashMap<String, String> labelEffects = new HashMap<>();
     public static HashMap<String, Integer> effectsDuration = new HashMap<>();
@@ -29,18 +30,19 @@ public class Drugs {
     public static ItemStack perico;
     public static ItemStack LSD;
 
+    // Lectura y almacenamiento de la informacion de la droga
     private static void updateDrugConfig(FileConfiguration config, String mapNameDrug, String pathNameDrug){
-        // Label Effects
+        // Efectos en etiqueta
         String plainText = config.getString(generalPath + "." + pathNameDrug + ".Label_Effects");
         String label = ChatColor.translateAlternateColorCodes('&', plainText);
 
         labelEffects.put(mapNameDrug, label);
 
-        // Duration
+        // Duracion
         int secondsDuration = Integer.parseInt(Objects.requireNonNull(config.getString(generalPath + "." + pathNameDrug + ".Duration")));
         effectsDuration.put(mapNameDrug, secondsDuration * TICKS_PER_SECOND);
 
-        // Effects
+        // Efectos
         LinkedList<PotionEffect> auxListEffects = new LinkedList<>();
 
         for (String effectTypes : config.getStringList(generalPath + "." + pathNameDrug + ".Effects")){
@@ -55,6 +57,7 @@ public class Drugs {
         effectsMap.put(mapNameDrug, auxListEffects);
     }
 
+    // Creacion del item y asignacion a la variable estatica
     protected static ItemStack createItem(Material BaseItem, String displayName, String mapNameDrug){
         ItemStack item = new ItemStack(BaseItem, 1);
         ItemMeta meta = item.getItemMeta();
@@ -81,6 +84,7 @@ public class Drugs {
     }
 
 
+    // Funcion de inicializacion
     public static void buildDrugs(UNDrugs plugin){
         // Actualizacion de la informacion general
         FileConfiguration config = plugin.getConfig();
