@@ -9,6 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import unmineraft.undrugs.UNDrugs;
 import unmineraft.undrugs.consumable.Drugs;
@@ -27,25 +28,26 @@ public class DrugsEvent implements Listener {
     /* La creacion de objetos toma de base objetos ya existentes, por ende si el objeto base no es consumible
      * es necesaria la simulacion de dicha caracteristica a traves de esta funcion */
     private void startEffects(Player player, ItemStack item){
+        LinkedList<PotionEffect> itemEffects = null;
         // Si el jugador consume Marihuana
         if (Objects.equals(item.getItemMeta(), Drugs.marihuana.getItemMeta())){
-            player.addPotionEffects(Drugs.effectsMap.get("Marihuana"));
+            itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("Marihuana").get("effects");
         }
 
         // Si el jugador consume perico
         if (Objects.equals(item.getItemMeta(), Drugs.perico.getItemMeta())){
-            player.addPotionEffects(Drugs.effectsMap.get("Perico"));
+            itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("Perico").get("effects");
         }
 
         // Si el jugador consume LSD
         if (Objects.equals(item.getItemMeta(), Drugs.LSD.getItemMeta())){
-            player.addPotionEffects(Drugs.effectsMap.get("LSD"));
+            itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("LSD").get("effects");
         }
+        if (itemEffects != null) player.addPotionEffects(itemEffects);
     }
 
     @EventHandler
     public void makeConsumable(PlayerInteractEvent event){
-        /* Validacion para no manejar objetos nulos */
         if (event.getItem() != null){
             ItemStack item = event.getItem();
 
@@ -55,8 +57,6 @@ public class DrugsEvent implements Listener {
             Player player = event.getPlayer();
             UUID playerID = player.getUniqueId();
 
-            /* Verificacion de si se "interactua" con el la droga, esto atraves de la
-             * deteccion de acciones con el click derecho */
             if ((Action.RIGHT_CLICK_AIR.equals(event.getAction()) || Action.RIGHT_CLICK_BLOCK.equals(event.getAction())) && !itemCooldown.contains(playerID)){
                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1.0F, 1.0F); // Sonido: Accion de comer
                 itemCooldown.add(player.getUniqueId()); // Evita el consumo de mas de 1 unidad en menos de la ejecucion de la animacion

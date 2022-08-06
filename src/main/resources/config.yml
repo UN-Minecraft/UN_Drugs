@@ -14,22 +14,25 @@ Config:
       #   - EFECTO;NIVEL_DEL_EFECTO
     # 2. Una vez registrado el efecto debe incluirlo en el apartado de Label_Effects, para que este sea mostrado
     #    en el cliente de manera correcta
-    marihuana:
+    Marihuana:
+      DisplayName: "&r&2Marihuana"
       Effects:
         - HUNGER;1
         - REGENERATION;2
-      Label_Effects: "Hambre y Regeneracion"
+      Label_Effects: "&l&7Hambre y Regeneracion"
       Duration: 60
-    perico:
+    Perico:
+      DisplayName: "&r&dPerico"
       Effects:
         - SPEED;4
         - WEAKNESS;1
-      Label_Effects: "Velocidad y Debilidad"
+      Label_Effects: "&l&7Velocidad y Debilidad"
       Duration: 50
     LSD:
+      DisplayName: "&r&eLSD"
       Effects:
         - CONFUSION;3
         - BLINDNESS;1
         - INCREASE_DAMAGE;1
-      Label_Effects: "Mareo, Ceguera y Fuerza"
+      Label_Effects: "&l&7Mareo, Ceguera y Fuerza"
       Duration: 40

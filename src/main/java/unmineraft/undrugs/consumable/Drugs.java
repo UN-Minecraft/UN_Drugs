@@ -12,64 +12,114 @@ import org.bukkit.potion.PotionEffectType;
 import unmineraft.undrugs.UNDrugs;
 
 
+import java.io.Console;
+import java.lang.reflect.Array;
 import java.util.*;
 
+/*
+ * Para nuevos items es necesario incluirlos en el archivo de configuracion
+ * y en el arreglo de pathDruds, con el mismo nombre que posee en la configuracion
+ */
+
 public class Drugs {
-    protected static int TICKS_PER_SECOND = 20;
+    private static String generalPath = "Config.Drugs";
+    private static List<String> generalLore;
+    private static FileConfiguration config;
 
-    private static String generalPath;
-    protected static List<String> generalDescription;
+    public static String[] pathDrugs = {"Marihuana", "Perico", "LSD"};
+    public static HashMap<String, HashMap<String, Object>> drugsInformation = new HashMap<>();
 
-    // Mapeo de las diferentes caracteristicas de cada droga
-    public static  HashMap<String, LinkedList<PotionEffect>> effectsMap = new HashMap<>();
-    public static HashMap<String, String> labelEffects = new HashMap<>();
-    public static HashMap<String, Integer> effectsDuration = new HashMap<>();
-
-    // ITEMS
+    // Items
     public static ItemStack marihuana;
     public static ItemStack perico;
     public static ItemStack LSD;
 
-    // Lectura y almacenamiento de la informacion de la droga
-    private static void updateDrugConfig(FileConfiguration config, String mapNameDrug, String pathNameDrug){
-        // Efectos en etiqueta
-        String plainText = config.getString(generalPath + "." + pathNameDrug + ".Label_Effects");
-        String label = ChatColor.translateAlternateColorCodes('&', plainText);
-
-        labelEffects.put(mapNameDrug, label);
-
-        // Duracion
-        int secondsDuration = Integer.parseInt(Objects.requireNonNull(config.getString(generalPath + "." + pathNameDrug + ".Duration")));
-        effectsDuration.put(mapNameDrug, secondsDuration * TICKS_PER_SECOND);
-
-        // Efectos
-        LinkedList<PotionEffect> auxListEffects = new LinkedList<>();
-
-        for (String effectTypes : config.getStringList(generalPath + "." + pathNameDrug + ".Effects")){
-            String[] effectTypeInfo = effectTypes.split(";");
-
-            int level = Integer.parseInt(effectTypeInfo[1]) - 1;
-            String nameEffect = effectTypeInfo[0];
-
-            PotionEffect temp = new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(nameEffect)), effectsDuration.get(mapNameDrug), level);
-            auxListEffects.push(temp);
+    private static void updateGeneralLore(String path){
+        try {
+            List<String> lore = Objects.requireNonNull(config.getStringList(path));
+            generalLore = lore;
+        } catch (Error error){
+            generalLore = Arrays.asList(new String[]{""});
         }
-        effectsMap.put(mapNameDrug, auxListEffects);
     }
 
-    // Creacion del item y asignacion a la variable estatica
-    protected static ItemStack createItem(Material BaseItem, String displayName, String mapNameDrug){
+    private static String getLabelEffects(String path){
+        try {
+            String label = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString(path)));
+            return label;
+        } catch (Error error){
+            return "";
+        }
+    }
+
+    private static int getDuration(String path){
+        int TICKS_PER_SECOND = 20;
+        try {
+            int seconds = Integer.parseInt(Objects.requireNonNull(config.getString(path)));
+            return TICKS_PER_SECOND * seconds;
+        } catch (Error error){
+            return 0;
+        }
+    }
+
+    private static LinkedList<PotionEffect> getEffects(String path, int secondsDuration){
+        try {
+            LinkedList<PotionEffect> auxListEffects = new LinkedList<>();
+            for (String effectTypes : Objects.requireNonNull(config.getStringList(path))){
+                String[] effectTypeInfo = effectTypes.split(";");
+
+                int level = Integer.parseInt(effectTypeInfo[1]) - 1;
+                String nameEffect = effectTypeInfo[0];
+
+                PotionEffect temp = new PotionEffect(Objects.requireNonNull(PotionEffectType.getByName(nameEffect)), secondsDuration, level);
+                auxListEffects.push(temp);
+            }
+
+            return  auxListEffects;
+        } catch (Error error){
+            return new LinkedList<PotionEffect>();
+        }
+    }
+
+    private static String getDisplayName(String path){
+        try {
+            String plainText = Objects.requireNonNull(config.getString(path));
+            return ChatColor.translateAlternateColorCodes('&', plainText);
+        } catch (Error error){
+            return "";
+        }
+    }
+
+    private static void updateDrugConfig(String pathNameDrug){
+        HashMap<String, Object> drug = new HashMap<>();
+
+        String path = generalPath + "." + pathNameDrug + ".Label_Effects";
+         drug.put("labelEffects", getLabelEffects(path));
+
+        path = generalPath + "." + pathNameDrug + ".Duration";
+        int secondsDuration = getDuration(path);
+        drug.put("effectsDuration", secondsDuration);
+
+        path = generalPath + "." + pathNameDrug + ".Effects";
+        drug.put("effects", getEffects(path, secondsDuration));
+
+        // Se guarda la informacion en la variable de clase
+        drugsInformation.put(pathNameDrug, drug);
+    }
+
+    protected static ItemStack createItem(Material BaseItem, String pathNameDrug){
         ItemStack item = new ItemStack(BaseItem, 1);
         ItemMeta meta = item.getItemMeta();
 
-        meta.setDisplayName(displayName);
+        String path = generalPath + "." + pathNameDrug + ".DisplayName";
+        meta.setDisplayName(Drugs.getDisplayName(path));
 
         ArrayList<String> lore = new ArrayList<>();
 
         String line;
-        for (int i=0; i<generalDescription.size(); i++){
-            line = generalDescription.get(i);
-            line = ChatColor.translateAlternateColorCodes('&', line).replaceAll("%effectsDrug%", labelEffects.get(mapNameDrug));
+        for (int i=0; i<generalLore.size(); i++){
+            line = generalLore.get(i);
+            line = ChatColor.translateAlternateColorCodes('&', line).replaceAll("%effectsDrug%", (String) drugsInformation.get(pathNameDrug).get("labelEffects"));
             lore.add(line);
         }
 
@@ -83,23 +133,16 @@ public class Drugs {
         return item;
     }
 
-
-    // Funcion de inicializacion
     public static void buildDrugs(UNDrugs plugin){
-        // Actualizacion de la informacion general
-        FileConfiguration config = plugin.getConfig();
+        Drugs.config = plugin.getConfig();
+        Drugs.updateGeneralLore(generalPath + ".General_Description");
 
-        generalPath = "Config.Drugs";
-        generalDescription = config.getStringList(generalPath + ".General_Description");
+        for (String pathNameDrug : Drugs.pathDrugs) {
+            updateDrugConfig(pathNameDrug);
+        }
 
-        // Actualizacion de la configuracion de los items
-        // PARAMS: Archivo conf, nombre para almacenar en los hashmaps, nombre en el archivo de config.yml
-        updateDrugConfig(config, "Marihuana", "marihuana");
-        updateDrugConfig(config, "Perico", "perico");
-        updateDrugConfig(config, "LSD", "LSD");
-
-        marihuana = createItem(Material.SWEET_BERRIES, ChatColor.DARK_GREEN + "Marihuana", "Marihuana");
-        perico = createItem(Material.SUGAR, ChatColor.LIGHT_PURPLE + "Perico", "Perico");
-        LSD = createItem(Material.PAPER, ChatColor.YELLOW + "LSD", "LSD");
+        Drugs.marihuana = createItem(Material.SWEET_BERRIES, "Marihuana");
+        Drugs.perico = createItem(Material.SUGAR, "Perico");
+        Drugs.LSD = createItem(Material.PAPER, "LSD");
     }
 }
