@@ -16,23 +16,35 @@ Config:
     #    en el cliente de manera correcta
     Marihuana:
       DisplayName: "&r&2Marihuana"
+      BaseItem: SWEET_BERRIES
       Effects:
         - HUNGER;1
         - REGENERATION;2
       Label_Effects: "&l&7Hambre y Regeneracion"
       Duration: 60
+      existAdditionalLore: false
+      additionalLore:
+        - ""
     Perico:
       DisplayName: "&r&dPerico"
+      BaseItem: SUGAR
       Effects:
         - SPEED;4
         - WEAKNESS;1
       Label_Effects: "&l&7Velocidad y Debilidad"
       Duration: 50
+      existAdditionalLore: false
+      additionalLore:
+        - ""
     LSD:
       DisplayName: "&r&eLSD"
+      BaseItem: PAPER
       Effects:
         - CONFUSION;3
         - BLINDNESS;1
         - INCREASE_DAMAGE;1
       Label_Effects: "&l&7Mareo, Ceguera y Fuerza"
       Duration: 40
+      existAdditionalLore: false
+      additionalLore:
+        - ""

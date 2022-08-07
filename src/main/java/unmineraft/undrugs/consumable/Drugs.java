@@ -33,7 +33,10 @@ public class Drugs {
      *    "Marihuana" = {
      *          "labelEffects" = "Cadena que describe los efectos dados",
      *          "effectsDuration" = 60 (en segundos),
-     *          "effects" = LinkedList<PotionEffects> (una estructura lineal que almacena todos los efectos de la droga)
+     *          "effects" = LinkedList<PotionEffects> (una estructura lineal que almacena todos los efectos de la droga),
+     *          "baseItem" = Material.ITEM_A_TOMAR,
+     *          "displayName" = "Cadena con el nombre del item",
+     *          "lore" = List<String> "Almacena la descripcion del item"
      *     }
      *    "Perico" = {...}
      *     ...
@@ -103,12 +106,62 @@ public class Drugs {
     }
 
     /* Buscamos obtener una cadena no nula y la traducimos para aplicar sus colores y estilos */
-    private static String getDisplayName(String path){
+    private static String getDisplayNameDrug(String path){
         try {
             String plainText = Objects.requireNonNull(config.getString(path));
             return ChatColor.translateAlternateColorCodes('&', plainText);
         } catch (Error error){
             return "";
+        }
+    }
+
+    /* Obtenemos la configuracion y generamos un item base sobre el cual se construye la droga */
+    private static Material getBaseItem(String path){
+        try {
+            String MATERIAL_ITEM_NAME = Objects.requireNonNull(config.getString(path));
+            Material selectedItem = Material.getMaterial(MATERIAL_ITEM_NAME);
+
+            return selectedItem;
+        } catch (Error error){
+            return Material.ENDER_PEARL;
+        }
+    }
+
+    /* En caso de exister, adicionamos la descripcion adicional al objeto */
+    private static ArrayList<String> getAdditionalLore(String pathNameDrug){
+        String path = generalPath + "." + pathNameDrug + ".additionalLore";
+        try {
+            List<String> plainText = Objects.requireNonNull(config.getStringList(path));
+
+            ArrayList<String> addLore = new ArrayList<>(plainText);
+            return addLore;
+        } catch (Error error){
+            return new ArrayList<>();
+        }
+    }
+
+    /* Generamos la descripcion base y aplicamos los efectos que genera su consumo */
+    private static ArrayList<String> getLoreItem(String pathNameDrug){
+        String line;
+        String path = generalPath + "." + pathNameDrug + ".Label_Effects";
+        String labelEffects = getLabelEffects(path);
+
+        ArrayList<String> lore = new ArrayList<>();
+        for (int i=0; i<generalLore.size(); i++){
+            line = generalLore.get(i);
+            line = ChatColor.translateAlternateColorCodes('&', line).replaceAll("%effectsDrug%", labelEffects);
+            lore.add(line);
+        }
+
+        path = generalPath + "." + pathNameDrug + ".existAdditionalLore";
+
+        try {
+            if (Objects.requireNonNull(config.getString(path)) == "true") {
+                lore.addAll(getAdditionalLore(pathNameDrug));
+            }
+            return lore;
+        } catch (Error error){
+            return lore;
         }
     }
 
@@ -127,34 +180,40 @@ public class Drugs {
         path = generalPath + "." + pathNameDrug + ".Effects";
         drug.put("effects", getEffects(path, secondsDuration));
 
+        path = generalPath + "." + pathNameDrug + ".BaseItem";
+        drug.put("baseItem", getBaseItem(path));
+
+        path = generalPath + "." + pathNameDrug + ".DisplayName";
+        drug.put("displayName", getDisplayNameDrug(path));
+
+        drug.put("lore", getLoreItem(pathNameDrug));
+
         // Se guarda la informacion en la variable de clase
         drugsInformation.put(pathNameDrug, drug);
     }
-    
-    protected static ItemStack createItem(Material BaseItem, String pathNameDrug){
-        ItemStack item = new ItemStack(BaseItem, 1);
-        ItemMeta meta = item.getItemMeta();
 
-        String path = generalPath + "." + pathNameDrug + ".DisplayName";
-        meta.setDisplayName(Drugs.getDisplayName(path));
+    /* Obtenemos la informacion ya recopilada y generamos el item, adicionamos un encantamiento de suerte
+    *  que no afecta su consumo para otorgar el efecto visual de encantamiento, en caso de error retornamos arena */
+    protected static ItemStack createItem(String pathNameDrug){
+        try {
+            HashMap<String, Object> drugInfo = Objects.requireNonNull(drugsInformation.get(pathNameDrug));
 
-        ArrayList<String> lore = new ArrayList<>();
+            ItemStack item = new ItemStack((Material) drugInfo.get("baseItem"), 1);
+            ItemMeta meta = item.getItemMeta();
 
-        String line;
-        for (int i=0; i<generalLore.size(); i++){
-            line = generalLore.get(i);
-            line = ChatColor.translateAlternateColorCodes('&', line).replaceAll("%effectsDrug%", (String) drugsInformation.get(pathNameDrug).get("labelEffects"));
-            lore.add(line);
+            meta.setDisplayName((String) Objects.requireNonNull(drugInfo.get("displayName")));
+
+            meta.setLore((List<String>) Objects.requireNonNull(drugInfo.get("lore")));
+
+            meta.addEnchant(Enchantment.LUCK, 1, false);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+            item.setItemMeta(meta);
+            return item;
+
+        } catch (Error error){
+            return new ItemStack(Material.SAND, 1);
         }
-
-        meta.setLore(lore);
-
-        meta.addEnchant(Enchantment.LUCK, 1, false);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-        item.setItemMeta(meta);
-
-        return item;
     }
 
     /* Metodo general encargado de realizar el proceso de obtencion, configuracion y almacenamiento de los objetos */
@@ -166,8 +225,8 @@ public class Drugs {
             updateDrugConfig(pathNameDrug);
         }
 
-        Drugs.marihuana = createItem(Material.SWEET_BERRIES, "Marihuana");
-        Drugs.perico = createItem(Material.SUGAR, "Perico");
-        Drugs.LSD = createItem(Material.PAPER, "LSD");
+        Drugs.marihuana = createItem("Marihuana");
+        Drugs.perico = createItem("Perico");
+        Drugs.LSD = createItem("LSD");
     }
 }
