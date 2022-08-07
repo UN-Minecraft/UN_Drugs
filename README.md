@@ -2,7 +2,7 @@
 
 ## Tareas del proyecto
 - [x] Cambiar el Nombre del Plugin a UN_Drugs para evitar confusiones
-- [ ] Hacer que el objeto de la droga sea stakeble hasta 64
+- [x] Hacer que el objeto de la droga sea stakeble hasta 64
 - [ ] Arreglar bug del consumo del LSD que deja llamarada en el suelo
 - [ ] Al usar el comando /drugs de forma correcta salir en el chat un mensaje en el juego 
 - [ ] Al usar el comando /drugs de forma incorrecta salir en el chat un mensaje en el juego

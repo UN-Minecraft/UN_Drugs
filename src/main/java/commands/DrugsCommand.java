@@ -49,8 +49,15 @@ public class DrugsCommand implements CommandExecutor {
             player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento no reconocido");
             return false;
         }
-        player.getInventory().addItem(selectedItem);
 
+        int indexFirstEmpty = player.getInventory().firstEmpty();
+        if (indexFirstEmpty == -1) {
+            player.sendMessage(plugin.name + ChatColor.RED + "Inventario lleno");
+            return false;
+        }
+
+        selectedItem.setAmount(64);
+        player.getInventory().setItem(indexFirstEmpty, selectedItem);
         return true;
     }
 }
