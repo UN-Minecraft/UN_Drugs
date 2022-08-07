@@ -40,7 +40,7 @@ public final class UNDrugs extends JavaPlugin {
     }
 
     public void commandRegister(){
-        this.getCommand("drug").setExecutor(new DrugsCommand(this));
+        this.getCommand("drugs").setExecutor(new DrugsCommand(this));
         this.getCommand("undrugs").setExecutor(new UnDrugsCommands(this));
     }
 

@@ -46,18 +46,19 @@ public class DrugsCommand implements CommandExecutor {
         } else if (message.equalsIgnoreCase("lsd")){
             selectedItem = Drugs.LSD;
         } else {
-            player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento no reconocido");
+            player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento solicitado no reconocido");
             return false;
         }
 
         int indexFirstEmpty = player.getInventory().firstEmpty();
         if (indexFirstEmpty == -1) {
-            player.sendMessage(plugin.name + ChatColor.RED + "Inventario lleno");
+            player.sendMessage(this.plugin.name + ChatColor.RED + "Inventario lleno");
             return false;
         }
 
         selectedItem.setAmount(64);
         player.getInventory().setItem(indexFirstEmpty, selectedItem);
+        player.sendMessage(this.plugin.name + ChatColor.DARK_GRAY + "Llámame si necesitas algo. Tengo perico, cuadros y bareta. Ya sabes como buscarme");
         return true;
     }
 }

@@ -7,7 +7,7 @@ description: Manejo de items especiales para el servidor de Minecraft UN
 website: https://github.com/UN-Minecraft
 
 commands:
-  drug:
+  drugs:
     description: Metodo de obtencion de los items de tipo droga
   undrugs:
     description: Comando administrador del plugin
