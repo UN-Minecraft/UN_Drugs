@@ -6,7 +6,7 @@
 - [ ] Arreglar bug del consumo del LSD que deja llamarada en el suelo
 - [x] Al usar el comando /drugs de forma correcta salir en el chat un mensaje en el juego 
 - [x] Al usar el comando /drugs de forma incorrecta salir en el chat un mensaje en el juego
-- [ ] Al consumir alguna sustancia agregar aviso solo visible para el jugador , ejemplo: Has consumido marihuana
+- [x] Al consumir alguna sustancia agregar aviso solo visible para el jugador, ejemplo: Has consumido marihuana
 - [ ] Si se consumen 2 sustancias de diferente tipo mientras siguen los efectos de alguna se produce una sobredosis,
 es decir el jugador pierde todos sus efectos y adquiere estos 2 nuevos: Lentitud y el efecto del whiter que reduce corazones durante 30 segundos
 - [ ] Añadir droga Hongos, efectos: Lentitud 2, Mareo 3, Resistencia 5.
