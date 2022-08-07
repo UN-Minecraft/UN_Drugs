@@ -26,7 +26,7 @@ public class Drugs {
     private static List<String> generalLore; // Descripcion que comparten todos los items
     private static FileConfiguration config; // Archivo de configuracion
 
-    public static String[] pathDrugs = {"Marihuana", "Perico", "LSD"}; // Nombre que identifica a cada uno de los items
+    public static String[] pathDrugs = {"Marihuana", "Perico", "LSD", "Hongos"}; // Nombre que identifica a cada uno de los items
 
     /* Estructura de objetos que permite almancenar la informacion de cada elemento en base a nombres, luce algo asi:
      * drugsInformation = {
@@ -50,6 +50,7 @@ public class Drugs {
     public static ItemStack marihuana;
     public static ItemStack perico;
     public static ItemStack LSD;
+    public static ItemStack hongos;
 
     // Permite obtener la lista del archivo de configuracion que se muestran como descripcion de cada item
     private static void updateGeneralLore(String path){
@@ -228,5 +229,6 @@ public class Drugs {
         Drugs.marihuana = createItem("Marihuana");
         Drugs.perico = createItem("Perico");
         Drugs.LSD = createItem("LSD");
+        Drugs.hongos = createItem("Hongos");
     }
 }

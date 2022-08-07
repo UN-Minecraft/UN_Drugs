@@ -32,7 +32,7 @@ Config:
         - SPEED;4
         - WEAKNESS;1
       Label_Effects: "&l&7Velocidad y Debilidad"
-      Duration: 50
+      Duration: 60
       existAdditionalLore: false
       additionalLore:
         - ""
@@ -44,7 +44,19 @@ Config:
         - BLINDNESS;1
         - INCREASE_DAMAGE;1
       Label_Effects: "&l&7Mareo, Ceguera y Fuerza"
-      Duration: 40
+      Duration: 60
+      existAdditionalLore: false
+      additionalLore:
+        - ""
+    Hongos:
+      DisplayName: "&r&eHongos"
+      BaseItem: RED_MUSHROOM
+      Effects:
+        - SLOW;2
+        - CONFUSION;3
+        - DAMAGE_RESISTANCE;5
+      Label_Effects: "&l&7Lentitud, Mareo y Resistencia"
+      Duration: 60
       existAdditionalLore: false
       additionalLore:
         - ""

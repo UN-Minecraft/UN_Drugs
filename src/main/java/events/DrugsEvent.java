@@ -35,7 +35,7 @@ public class DrugsEvent implements Listener {
             itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("Marihuana").get("effects");
         }
 
-        // Si el jugador consume perico
+        // Si el jugador consume Perico
         if (Objects.equals(item.getItemMeta(), Drugs.perico.getItemMeta())){
             itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("Perico").get("effects");
         }
@@ -44,6 +44,12 @@ public class DrugsEvent implements Listener {
         if (Objects.equals(item.getItemMeta(), Drugs.LSD.getItemMeta())){
             itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("LSD").get("effects");
         }
+
+        // Si el jugador consume Hongos
+        if (Objects.equals(item.getItemMeta(), Drugs.hongos.getItemMeta())) {
+            itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("Hongos").get("effects");
+        }
+
         if (itemEffects != null) player.addPotionEffects(itemEffects);
     }
 
@@ -110,5 +116,6 @@ public class DrugsEvent implements Listener {
         isConsumable.add(Drugs.marihuana.getItemMeta());
         isConsumable.add(Drugs.perico.getItemMeta());
         isConsumable.add(Drugs.LSD.getItemMeta());
+        isConsumable.add(Drugs.hongos.getItemMeta());
     }
 }

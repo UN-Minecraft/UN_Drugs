@@ -45,6 +45,8 @@ public class DrugsCommand implements CommandExecutor {
             selectedItem = Drugs.perico;
         } else if (message.equalsIgnoreCase("lsd")){
             selectedItem = Drugs.LSD;
+        } else if (message.equalsIgnoreCase("hongos")){
+            selectedItem = Drugs.hongos;
         } else {
             player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento solicitado no reconocido");
             return false;
