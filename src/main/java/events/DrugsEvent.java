@@ -1,5 +1,6 @@
 package events;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -79,6 +80,15 @@ public class DrugsEvent implements Listener {
                         }
 
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1.0F, 1.0F); // Sonido: Accion de eructar
+
+                        String displayNameItem = "Objeto desconocido";
+
+                        if (item.getItemMeta().getDisplayName() != null) {
+                            displayNameItem = item.getItemMeta().getDisplayName();
+                        }
+
+
+                        player.sendMessage(DrugsEvent.plugin.name + ChatColor.WHITE + "Has consumido: " + displayNameItem);
 
                         startEffects(player, item); // Inicio de los efectos de la droga
                         new BukkitRunnable(){
