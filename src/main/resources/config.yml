@@ -16,7 +16,7 @@ Config:
     #    en el cliente de manera correcta
     Marihuana:
       DisplayName: "&r&2Marihuana"
-      BaseItem: SWEET_BERRIES
+      BaseItem: BEETROOT
       Effects:
         - HUNGER;1
         - REGENERATION;2
