@@ -209,6 +209,8 @@ public class Drugs {
             meta.addEnchant(Enchantment.LUCK, 1, false);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
+            meta.setCustomModelData(1);
+
             item.setItemMeta(meta);
             return item;
 
