@@ -22,6 +22,7 @@ Config:
         - REGENERATION;2
       Label_Effects: "&l&7Hambre y Regeneracion"
       Duration: 60
+      CustomModelData: 1
       existAdditionalLore: false
       additionalLore:
         - ""
@@ -33,18 +34,20 @@ Config:
         - WEAKNESS;1
       Label_Effects: "&l&7Velocidad y Debilidad"
       Duration: 60
+      CustomModelData: 1
       existAdditionalLore: false
       additionalLore:
         - ""
     LSD:
       DisplayName: "&r&eLSD"
-      BaseItem: PAPER
+      BaseItem: COOKIE
       Effects:
         - CONFUSION;3
         - BLINDNESS;1
         - INCREASE_DAMAGE;1
       Label_Effects: "&l&7Mareo, Ceguera y Fuerza"
       Duration: 60
+      CustomModelData: 1
       existAdditionalLore: false
       additionalLore:
         - ""
@@ -57,6 +60,7 @@ Config:
         - DAMAGE_RESISTANCE;5
       Label_Effects: "&l&7Lentitud, Mareo y Resistencia"
       Duration: 60
+      CustomModelData: 1
       existAdditionalLore: false
       additionalLore:
         - ""
