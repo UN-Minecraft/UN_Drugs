@@ -11,46 +11,65 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import unmineraft.undrugs.UNDrugs;
 import unmineraft.undrugs.consumable.Drugs;
 
-import java.util.LinkedList;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class DrugsEvent implements Listener {
     private static UNDrugs plugin;
 
     private static final LinkedList<ItemMeta> isConsumable = new LinkedList<>();
     private static final LinkedList<UUID> itemCooldown = new LinkedList<>();
+    
+    private boolean isDifferentDrugEffectActive(Player player, String itemConsumed){
+        LinkedList<PotionEffect> activeEffects = (LinkedList<PotionEffect>) player.getActivePotionEffects();
+
+        if (activeEffects != Drugs.drugsInformation.get(itemConsumed).get("effects")) return true;
+        return false;
+    }
 
 
     /* La creacion de objetos toma de base objetos ya existentes, por ende si el objeto base no es consumible
      * es necesaria la simulacion de dicha caracteristica a traves de esta funcion */
     private void startEffects(Player player, ItemStack item){
         LinkedList<PotionEffect> itemEffects = null;
+        String drugConsumed = "";
         // Si el jugador consume Marihuana
         if (Objects.equals(item.getItemMeta(), Drugs.marihuana.getItemMeta())){
-            itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("Marihuana").get("effects");
+            drugConsumed = "Marihuana";
         }
 
         // Si el jugador consume Perico
         if (Objects.equals(item.getItemMeta(), Drugs.perico.getItemMeta())){
-            itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("Perico").get("effects");
+            drugConsumed = "Perico";
         }
 
         // Si el jugador consume LSD
         if (Objects.equals(item.getItemMeta(), Drugs.LSD.getItemMeta())){
-            itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("LSD").get("effects");
+            drugConsumed = "LSD";
         }
 
         // Si el jugador consume Hongos
         if (Objects.equals(item.getItemMeta(), Drugs.hongos.getItemMeta())) {
-            itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get("Hongos").get("effects");
+            drugConsumed = "Hongos";
         }
 
-        if (itemEffects != null) player.addPotionEffects(itemEffects);
+        if (!isDifferentDrugEffectActive(player, drugConsumed)){
+            itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get(drugConsumed).get("effects");
+            player.addPotionEffects(itemEffects);
+            return;
+        }
+
+        if (isDifferentDrugEffectActive(player, drugConsumed)){
+            // Se limpia cada efecto del jugador, y se implementan los efectos de la "sobredosis"
+            for (PotionEffect effect : player.getActivePotionEffects()){
+                player.removePotionEffect(effect.getType());
+            }
+            player.addPotionEffects(Drugs.sobredosis);
+        }
     }
 
     @EventHandler
