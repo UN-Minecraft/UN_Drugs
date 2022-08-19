@@ -64,3 +64,8 @@ Config:
       existAdditionalLore: false
       additionalLore:
         - ""
+    Sobredosis:
+      Duration: 30
+      Effects:
+        - WITHER;1
+        - SLOW;1
