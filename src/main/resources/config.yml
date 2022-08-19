@@ -7,13 +7,35 @@ Config:
       - "&r&5Este item es &c&lILEGAL&r&5, que no te atrapen con el"
       - ""
       - "&5Su consumo otorga: &8%effectsDrug%"
-    # Para el manejo de los efectos es necesario:
-    # 1. Al agregar efectos a un item ya existente es necesario que este, sea ingresado
-    #    teniendo en cuenta su referencia en el juego (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html)
-    #    en mayusculas, siguiendo la estructura:
-      #   - EFECTO;NIVEL_DEL_EFECTO
-    # 2. Una vez registrado el efecto debe incluirlo en el apartado de Label_Effects, para que este sea mostrado
-    #    en el cliente de manera correcta
+      # Para el manejo de los efectos es necesario:
+      # 1. Los tipos de efectos están disponibles en esta doc: (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html)
+      #    Deben ser registrados tal cual aparecen en la página con la estructura de:
+      #       - EFECTO;NIVEL_DEL_EFECTO
+      # 2. Una vez registrado el efecto debe incluir la descripción qué ira en el lore del item, para que este sea mostrado
+      #    en el cliente de manera correcta
+      # 3. Crear una variable que almacene el nuevo item en la clase Drugs (Archivo: Drugs.java), con la estructura:
+      #       - public static ItemStack NOMBRE_NUEVO_ITEM_VARIABLE;
+      # 4. Registrar el nombre con el cual se describe el objeto en este documento, en la variable pathDrugs de la clase Drugs (Archivo: Drugs.java)
+      #       - public static String[] pathDrugs = {"Marihuana", "Perico", "LSD", "Hongos", "NOMBRE_NUEVO_ITEM_CONFIGURACION", ...}
+      # 5. Dirigirse a la función "buildDrugs" en la clase Drugs (Archivo: Drugs.java) y a la variable creada en el paso #3
+      #    almacenar el resultado de la función "createItem("NOMBRE_NUEVO_ITEM_CONFIGURACION")" quedando como:
+      #       - Drugs.NOMBRE_NUEVO_ITEM_VARIABLE = createItem(NOMBRE_NUEVO_ITEM_CONFIGURACION);
+      # 6. Para que al ser consumido los efectos carguen es necesario ir al administrador de eventos (Archivo: DrugsEvent.java),
+      #    en la función DrugsEvent debe incluir el meta del objeto a la lista, a través del código:
+      #       - isConsumable.add(Drugs.NOMBRE_NUEVO_ITEM_VARIABLE.getItemMeta())
+      # 7. En la función startEffects de la clase DrugsEvent (Archivo: DrugsEvent.java) debe copiar el código:
+      #       - if (Objects.equals(item.getItemMeta(), Drugs.NOMBRE_NUEVO_ITEM_VARIABLE.getItemMeta())) {
+      #             drugConsumed = .NOMBRE_NUEVO_ITEM_CONFIGURACION;
+      #         }
+      # 8. Agregar esta condición en la función onCommand (Archivo: DrugsCommand) en el apartado de:
+      #       - else if (message.equalsIgnoreCase(NOMBRE_DE_LA_DROGA)){
+      #            selectedItem = Drugs.NOMBRE_NUEVO_ITEM_VARIABLE;
+      #         }
+      #   Antes del código que luce:
+      #       - else {
+      #            player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento solicitado no reconocido");
+      #            return false;
+      #         }
     Marihuana:
       DisplayName: "&r&2Marihuana"
       BaseItem: BEETROOT
