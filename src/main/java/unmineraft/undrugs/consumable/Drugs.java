@@ -18,11 +18,11 @@ import java.util.*;
 
 /*
  * Para nuevos items es necesario incluirlos en el archivo de configuracion
- * y en el arreglo de pathDruds, con el mismo nombre que posee en la configuracion
+ * y en el arreglo de pathDrugs, con el mismo nombre que posee en la configuracion
  */
 
 public class Drugs {
-    private static String generalPath = "Config.Drugs"; // Ruta de los items en el archivo de configuracion
+    private static final String generalPath = "Config.Drugs"; // Ruta de los items en el archivo de configuracion
     private static List<String> generalLore; // Descripcion que comparten todos los items
     private static FileConfiguration config; // Archivo de configuracion
 
@@ -52,13 +52,14 @@ public class Drugs {
     public static ItemStack LSD;
     public static ItemStack hongos;
 
+    public static LinkedList<PotionEffect> sobredosis;
+
     // Permite obtener la lista del archivo de configuracion que se muestran como descripcion de cada item
     private static void updateGeneralLore(String path){
         try {
-            List<String> lore = Objects.requireNonNull(config.getStringList(path));
-            generalLore = lore;
+            generalLore = Objects.requireNonNull(config.getStringList(path));
         } catch (Error error){
-            generalLore = Arrays.asList(new String[]{""});
+            generalLore = Collections.singletonList("");
         }
     }
 
@@ -232,5 +233,8 @@ public class Drugs {
         Drugs.perico = createItem("Perico");
         Drugs.LSD = createItem("LSD");
         Drugs.hongos = createItem("Hongos");
+
+        String pathSobredosis = generalPath + ".Sobredosis";
+        Drugs.sobredosis = getEffects(pathSobredosis + ".Effects", getDuration(pathSobredosis + ".Duration"));
     }
 }
