@@ -93,7 +93,7 @@ public class DrugsEvent implements Listener {
             }
             player.addPotionEffects(Drugs.sobredosis);
             lastDrugConsumed.put(player.getUniqueId(), "Sobredosis");
-            player.sendMessage(DrugsEvent.plugin.name + ChatColor.RED + "Cuidado con mezclar sustancias");
+            player.sendMessage(DrugsEvent.plugin.name + ChatColor.RED + "Te ha dado una sobredosis, cuidado con mezclar sustancias");
         }
     }
 
