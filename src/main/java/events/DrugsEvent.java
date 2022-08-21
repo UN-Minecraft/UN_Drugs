@@ -24,7 +24,7 @@ public class DrugsEvent implements Listener {
     private static final LinkedList<ItemMeta> isConsumable = new LinkedList<>();
     private static final LinkedList<UUID> itemCooldown = new LinkedList<>();
 
-    private static HashMap<UUID, String> lastDrugConsumed = new HashMap<>();
+    private static final HashMap<UUID, String> lastDrugConsumed = new HashMap<>();
 
     private boolean isDifferentDrugEffectActive(Player player, String itemConsumed, String lastConsumed){
         // Si no ha consumido una droga antes
@@ -34,12 +34,12 @@ public class DrugsEvent implements Listener {
         if (player.getActivePotionEffects().size() == 0) return false;
 
         // Si la droga es igual a la ultima consumida
-        if (lastDrugConsumed.get(player.getUniqueId()) == itemConsumed) return false;
+        if (Objects.equals(lastDrugConsumed.get(player.getUniqueId()), itemConsumed)) return false;
 
         // Si no ha terminado el efecto de la sobredosis
-        if (lastDrugConsumed.get(player.getUniqueId()) == "Sobredosis") return  true;
+        if (Objects.equals(lastDrugConsumed.get(player.getUniqueId()), "Sobredosis")) return  true;
 
-        // Si la droga es diferente a la ultima consumida, como aun tiene efectos activos entra en sobredosis
+        // Si la droga es diferente a la última consumida, como aún tiene efectos activos entra en sobredosis
         LinkedList<PotionEffectType> baseActiveEffectsTypes = new LinkedList<>();
         for (PotionEffect effect : player.getActivePotionEffects()){
             baseActiveEffectsTypes.push(effect.getType());
@@ -52,16 +52,14 @@ public class DrugsEvent implements Listener {
             if (baseActiveEffectsTypes.contains(effect.getType())) coincidenceCounter++;
         }
 
-        if (coincidenceCounter >= lastConsumedDrugEffects.size()) return true;
-
-        return false;
+        return coincidenceCounter >= lastConsumedDrugEffects.size();
     }
 
 
-    /* La creacion de objetos toma de base objetos ya existentes, por ende si el objeto base no es consumible
-     * es necesaria la simulacion de dicha caracteristica a traves de esta funcion */
+    /* La creación de objetos toma de base objetos ya existentes, por si el objeto base no es consumible
+     * es necesaria la simulación de dicha característica a través de esta function */
     private void startEffects(Player player, ItemStack item){
-        LinkedList<PotionEffect> itemEffects = null;
+        LinkedList<PotionEffect> itemEffects;
         String drugConsumed = "";
         // Si el jugador consume Marihuana
         if (Objects.equals(item.getItemMeta(), Drugs.marihuana.getItemMeta())){
@@ -83,15 +81,12 @@ public class DrugsEvent implements Listener {
             drugConsumed = "Hongos";
         }
 
-        Boolean verifyActiveSobredosis = isDifferentDrugEffectActive(player, drugConsumed, lastDrugConsumed.get(player.getUniqueId()));
+        boolean verifyActiveSobredosis = isDifferentDrugEffectActive(player, drugConsumed, lastDrugConsumed.get(player.getUniqueId()));
         if (!verifyActiveSobredosis){
             itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get(drugConsumed).get("effects");
             player.addPotionEffects(itemEffects);
             lastDrugConsumed.put(player.getUniqueId(), drugConsumed);
-            return;
-        }
-
-        if (verifyActiveSobredosis){
+        } else {
             // Se limpia cada efecto del jugador, y se implementan los efectos de la "sobredosis"
             for (PotionEffect effect : player.getActivePotionEffects()){
                 player.removePotionEffect(effect.getType());
@@ -107,20 +102,20 @@ public class DrugsEvent implements Listener {
         if (event.getItem() != null){
             ItemStack item = event.getItem();
 
-            /* En caso de que el objeto no este incluido en los items que tienen simulacion de consumo
+            /* En caso de que el objeto no este incluido en los items que tienen simulación de consumo
              * se ignora para que mantenga su comportamiento */
             if (!isConsumable.contains(item.getItemMeta())) return;
             Player player = event.getPlayer();
             UUID playerID = player.getUniqueId();
 
             if ((Action.RIGHT_CLICK_AIR.equals(event.getAction()) || Action.RIGHT_CLICK_BLOCK.equals(event.getAction())) && !itemCooldown.contains(playerID)){
-                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1.0F, 1.0F); // Sonido: Accion de comer
-                itemCooldown.add(player.getUniqueId()); // Evita el consumo de mas de 1 unidad en menos de la ejecucion de la animacion
+                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GENERIC_EAT, 1.0F, 1.0F); // Sonido: Acción de comer
+                itemCooldown.add(player.getUniqueId()); // Evita el consumo de más de 1 unidad en menos de la ejecución de la animación
 
-                /* El manejo de eventos es asincrono, si queremos ejecutar codigo en el hilo principal
-                *  es necesario emplear esta funcion */
+                /* El manejo de eventos es asíncrono, si queremos ejecutar código en el hilo principal
+                *  es necesario emplear esta función */
                 new BukkitRunnable(){
-                    /* Al simular el consumo es necesario manejar el stack, por esta razon validamos que el jugador
+                    /* Al simular el consumo es necesario manejar el stack, por esta razón validamos que el jugador
                     *  se encuentre en el modo survival, en dicho caso al ser consumido se reduce el stack en 1 unidad */
                     @Override
                     public void run(){
@@ -134,15 +129,9 @@ public class DrugsEvent implements Listener {
                             }
                         }
 
-                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1.0F, 1.0F); // Sonido: Accion de eructar
+                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1.0F, 1.0F); // Sonido: Acción de eructar
 
-                        String displayNameItem = "Objeto desconocido";
-
-                        if (item.getItemMeta().getDisplayName() != null) {
-                            displayNameItem = item.getItemMeta().getDisplayName();
-                        }
-
-
+                        String displayNameItem = Objects.requireNonNull(item.getItemMeta()).getDisplayName();
                         player.sendMessage(DrugsEvent.plugin.name + ChatColor.WHITE + "Has consumido: " + displayNameItem);
 
                         startEffects(player, item); // Inicio de los efectos de la droga
@@ -161,7 +150,7 @@ public class DrugsEvent implements Listener {
     public DrugsEvent(UNDrugs plugin){
         DrugsEvent.plugin = plugin;
 
-        // Listado de las drogas que tienen simulacion de consumo
+        // Listado de las drogas que tienen simulación de consumo
         isConsumable.add(Drugs.marihuana.getItemMeta());
         isConsumable.add(Drugs.perico.getItemMeta());
         isConsumable.add(Drugs.LSD.getItemMeta());

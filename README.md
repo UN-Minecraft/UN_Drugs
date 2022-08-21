@@ -15,7 +15,7 @@ es decir el jugador pierde todos sus efectos y adquiere estos 2 nuevos: Lentitud
 
 - [ ] El item de la droga pueda ser adquirido sembrando o crafteando las respectivas plantas ejemplo:
 Marihuana: Bayas
-Perico: Azucar
+Perico: Azúcar
 LSD: Crafteo del Papel
 
-El crecimiento del azucar y de las bayas por tanto tiene que ser lento, de aprox 30 minutos 1 bloque o una actualización.
+El crecimiento del azúcar y de las bayas, por tanto, tiene que ser lento, de aproximadamente 30 minutos 1 bloque o una actualización.
