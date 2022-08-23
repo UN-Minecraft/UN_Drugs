@@ -19,7 +19,7 @@ public class DrugsCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         /*
-         * Se verifica que el emisor del comando sea un jugador, esto debido a que para la asignacion de una droga
+         * Se verifica que el emisor del comando sea un jugador, esto debido a que para la asignación de una droga
          * es necesario que el usuario que lo solicita permita el manejo del inventario. En caso tal de que se realize
          * desde consola, este enviara un mensaje de error
          */
@@ -30,8 +30,8 @@ public class DrugsCommand implements CommandExecutor {
         }
 
         /*
-         * Se crea el jugador realizando la conversion de CommandSender -> Player.
-         * Los argumentos del comando se unen y se general mensaje registrado, posteriormente
+         * Se crea el jugador realizando la conversion de CommandSender a Player.
+         * Los argumentos del comando se unen y sé general mensaje registrado, posteriormente
          * se verifica si alguno de los elementos existentes corresponde con el solicitado y en caso tal
          * se le adicionara al jugador el item.
          */

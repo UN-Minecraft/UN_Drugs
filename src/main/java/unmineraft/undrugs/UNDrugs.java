@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import unmineraft.undrugs.consumable.Drugs;
 
 import java.io.File;
+import java.util.Objects;
 
 public final class UNDrugs extends JavaPlugin {
     public String pathConfig;
@@ -40,8 +41,8 @@ public final class UNDrugs extends JavaPlugin {
     }
 
     public void commandRegister(){
-        this.getCommand("drugs").setExecutor(new DrugsCommand(this));
-        this.getCommand("undrugs").setExecutor(new UnDrugsCommands(this));
+        Objects.requireNonNull(this.getCommand("drugs")).setExecutor(new DrugsCommand(this));
+        Objects.requireNonNull(this.getCommand("undrugs")).setExecutor(new UnDrugsCommands(this));
     }
 
     public void eventsRegister(){

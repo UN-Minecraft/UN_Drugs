@@ -1,7 +1,7 @@
 Config:
   Drugs:
-    # La modificacion del "lore" de un item se basa en una estructura lineal, donde cada posicion de esta estructura
-    # representa una nueva linea, por ende, si desea que los elementos registrados vayan en una nueva linea, es necesario
+    # La modificación del "lore" de un item se basa en una estructura lineal, donde cada position de esta estructura
+    # representa una nueva línea, si desea que los elementos registrados vayan en una nueva línea, es necesario
     # que los inserte a la lista de General_Description.
     General_Description:
       - "&r&5Este item es &c&lILEGAL&r&5, que no te atrapen con el"
@@ -42,7 +42,7 @@ Config:
       Effects:
         - HUNGER;1
         - REGENERATION;2
-      Label_Effects: "&l&7Hambre y Regeneracion"
+      Label_Effects: "&l&7Hambre y Regeneración"
       Duration: 60
       CustomModelData: 1
       existAdditionalLore: false
