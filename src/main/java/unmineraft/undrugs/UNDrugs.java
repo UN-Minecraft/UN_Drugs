@@ -18,7 +18,7 @@ public final class UNDrugs extends JavaPlugin {
 
     PluginDescriptionFile pdfile = getDescription();
     public String version = ChatColor.GREEN + pdfile.getVersion();
-    public String name = ChatColor.YELLOW + "[" + ChatColor.GREEN + pdfile.getName() + ChatColor.YELLOW + "]";
+    public String name = ChatColor.translateAlternateColorCodes('&', "&5[&d\uD83D\uDD25UNDrugs&5]");
 
     @Override
     public void onEnable() {

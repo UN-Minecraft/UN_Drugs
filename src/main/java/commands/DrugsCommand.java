@@ -60,7 +60,7 @@ public class DrugsCommand implements CommandExecutor {
 
         selectedItem.setAmount(64);
         player.getInventory().setItem(indexFirstEmpty, selectedItem);
-        player.sendMessage(this.plugin.name + ChatColor.DARK_GRAY + "Llámame si necesitas algo. Tengo perico, cuadros y bareta. Ya sabes como buscarme");
+        player.sendMessage(this.plugin.name + ChatColor.WHITE + "Llámame si necesitas algo. Tengo perico, cuadros y bareta. Ya sabes como buscarme");
         return true;
     }
 }
