@@ -1,5 +1,6 @@
 package unmineraft.undrugs;
 
+import commands.BaseItemCraftCommand;
 import commands.DrugsCommand;
 import commands.UnDrugsCommands;
 import events.DrugsEvent;
@@ -9,6 +10,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import unmineraft.undrugs.consumable.Drugs;
+import unmineraft.undrugs.craftBase.BaseItemCraft;
 
 import java.io.File;
 import java.util.Objects;
@@ -28,6 +30,7 @@ public final class UNDrugs extends JavaPlugin {
         this.saveDefaultConfig();
 
         Drugs.buildDrugs(this);
+        BaseItemCraft.buildItem(this);
 
         commandRegister();
         eventsRegister();
@@ -42,6 +45,7 @@ public final class UNDrugs extends JavaPlugin {
 
     public void commandRegister(){
         Objects.requireNonNull(this.getCommand("drugs")).setExecutor(new DrugsCommand(this));
+        Objects.requireNonNull(this.getCommand("baseDrug")).setExecutor(new BaseItemCraftCommand(this));
         Objects.requireNonNull(this.getCommand("undrugs")).setExecutor(new UnDrugsCommands(this));
     }
 

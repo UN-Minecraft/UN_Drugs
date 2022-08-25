@@ -96,3 +96,9 @@ Config:
         - CONFUSION;1
         - BLINDNESS;1
         - HUNGER;1
+  BaseItem:
+    Cogote:
+      DisplayName: "&r&2Cogote"
+      BaseItem: BEETROOT
+      Lore:
+        - "&r&fPuedes usarlo para hacer &2Marihuana"
