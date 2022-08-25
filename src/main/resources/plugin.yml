@@ -13,3 +13,6 @@ commands:
   undrugs:
     description: Comando administrador del plugin
     permission: op
+  baseDrug:
+    description: Otorga los items necesarios para craftear la droga
+    permission: op

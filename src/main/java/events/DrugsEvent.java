@@ -26,7 +26,7 @@ public class DrugsEvent implements Listener {
 
     private static final HashMap<UUID, String> lastDrugConsumed = new HashMap<>();
 
-    private boolean isDifferentDrugEffectActive(Player player, String itemConsumed, String lastConsumed){
+    private boolean isDifferentDrugEffectActive(Player player, String itemConsumed){
         // Si no ha consumido una droga antes
         if (!lastDrugConsumed.containsKey(player.getUniqueId())) return false;
 
@@ -36,23 +36,69 @@ public class DrugsEvent implements Listener {
         // Si la droga es igual a la ultima consumida
         if (Objects.equals(lastDrugConsumed.get(player.getUniqueId()), itemConsumed)) return false;
 
-        // Si no ha terminado el efecto de la sobredosis
-        if (Objects.equals(lastDrugConsumed.get(player.getUniqueId()), "Sobredosis")) return  true;
+        // Si el jugador tuvo una sobredosis
+        if (Objects.equals(lastDrugConsumed.get(player.getUniqueId()), "Sobredosis")) {
+            // Obtenemos la lista de tipos de efecto que tiene activos
+            LinkedList<PotionEffectType> baseActiveEffectsTypes = new LinkedList<>();
+            for (PotionEffect effect : player.getActivePotionEffects()){
+                PotionEffectType typeEffect = effect.getType();
 
-        // Si la droga es diferente a la última consumida, como aún tiene efectos activos entra en sobredosis
+                // Validamos que no exista el tipo de efecto antes
+                if (!baseActiveEffectsTypes.contains(typeEffect)){
+                    baseActiveEffectsTypes.push(typeEffect);
+                }
+            }
+
+            // Obtener los tipos de efecto de la sobredosis
+            LinkedList<PotionEffectType> sobredosisEffects = new LinkedList<>();
+            for (PotionEffect effect : Drugs.sobredosis){
+                PotionEffectType typeEffect = effect.getType();
+
+                // Validamos que no exista el tipo de efecto antes
+                if (!sobredosisEffects.contains(typeEffect)){
+                    sobredosisEffects.push(effect.getType());
+                }
+            }
+
+            int coincidenceCounter = 0;
+
+            // Buscamos coincidencias, si el número de coincidencias es igual al tamaño de los efectos de la sobredosis
+            // asumimos que no ha terminado dicho efecto
+            for (PotionEffectType typeEffect: baseActiveEffectsTypes){
+                if (sobredosisEffects.contains(typeEffect)) coincidenceCounter++;
+            }
+
+            return (coincidenceCounter == sobredosisEffects.size());
+        };
+
+        // Si no ha tenido sobredosis y la droga es diferente a la última consumida
         LinkedList<PotionEffectType> baseActiveEffectsTypes = new LinkedList<>();
         for (PotionEffect effect : player.getActivePotionEffects()){
-            baseActiveEffectsTypes.push(effect.getType());
+            PotionEffectType typeEffect = effect.getType();
+
+            // Validamos que no exista el tipo de efecto antes
+            if (!baseActiveEffectsTypes.contains(typeEffect)){
+                baseActiveEffectsTypes.push(typeEffect);
+            }
         }
 
-        LinkedList<PotionEffect> lastConsumedDrugEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get(lastConsumed).get("effects");
+        String nameLastState = lastDrugConsumed.get(player.getUniqueId());
+        LinkedList<PotionEffectType> lastDrugConsumedEffects = new LinkedList<>();
+        for (PotionEffect effect : (LinkedList<PotionEffect>) Drugs.drugsInformation.get(nameLastState).get("effects")){
+            PotionEffectType typeEffect = effect.getType();
+
+            // Validamos que no exista el tipo de efecto antes
+            if (!baseActiveEffectsTypes.contains(typeEffect)){
+                lastDrugConsumedEffects.push(typeEffect);
+            }
+        }
+
         int coincidenceCounter = 0;
-
-        for (PotionEffect effect : lastConsumedDrugEffects){
-            if (baseActiveEffectsTypes.contains(effect.getType())) coincidenceCounter++;
+        for (PotionEffectType typeEffect: baseActiveEffectsTypes){
+            if (lastDrugConsumedEffects.contains(typeEffect)) coincidenceCounter++;
         }
 
-        return coincidenceCounter >= lastConsumedDrugEffects.size();
+        return (coincidenceCounter == lastDrugConsumedEffects.size());
     }
 
 
@@ -81,7 +127,7 @@ public class DrugsEvent implements Listener {
             drugConsumed = "Hongos";
         }
 
-        boolean verifyActiveSobredosis = isDifferentDrugEffectActive(player, drugConsumed, lastDrugConsumed.get(player.getUniqueId()));
+        boolean verifyActiveSobredosis = isDifferentDrugEffectActive(player, drugConsumed);
         if (!verifyActiveSobredosis){
             itemEffects = (LinkedList<PotionEffect>) Drugs.drugsInformation.get(drugConsumed).get("effects");
             player.addPotionEffects(itemEffects);

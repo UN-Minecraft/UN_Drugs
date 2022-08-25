@@ -38,10 +38,12 @@ Config:
       #         }
     Marihuana:
       DisplayName: "&r&2Marihuana"
-      BaseItem: BEETROOT
+      BaseItem: TROPICAL_FISH
       Effects:
         - HUNGER;1
         - REGENERATION;2
+        - SLOW_FALLING;3
+        - JUMP;2
       Label_Effects: "&l&7Hambre y Regeneración"
       Duration: 60
       CustomModelData: 1
@@ -79,7 +81,7 @@ Config:
       Effects:
         - SLOW;2
         - CONFUSION;3
-        - DAMAGE_RESISTANCE;5
+        - DAMAGE_RESISTANCE;3
       Label_Effects: "&l&7Lentitud, Mareo y Resistencia"
       Duration: 60
       CustomModelData: 1
@@ -91,3 +93,12 @@ Config:
       Effects:
         - WITHER;1
         - SLOW;1
+        - CONFUSION;1
+        - BLINDNESS;1
+        - HUNGER;1
+  BaseItem:
+    Cogote:
+      DisplayName: "&r&2Cogote"
+      BaseItem: BEETROOT
+      Lore:
+        - "&r&fPuedes usarlo para hacer &2Marihuana"
