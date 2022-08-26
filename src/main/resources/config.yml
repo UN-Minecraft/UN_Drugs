@@ -36,6 +36,12 @@ Config:
       #            player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento solicitado no reconocido");
       #            return false;
       #         }
+      # 9. Para las recetas se maneja la estructura de:
+      #         Shape:
+      #        - "ABC"
+      #        - "DEF"
+      #        - "GHI"
+      #    Donde las celdas vacías se representaran con X
     Marihuana:
       DisplayName: "&r&2Marihuana"
       BaseItem: TROPICAL_FISH
@@ -50,6 +56,14 @@ Config:
       existAdditionalLore: false
       additionalLore:
         - ""
+      Shape:
+        - "P"
+        - "C"
+        - "P"
+      Ingredients:
+        - P;PAPER
+        - C,Cogote
+      Materials:
     Perico:
       DisplayName: "&r&dPerico"
       BaseItem: SUGAR

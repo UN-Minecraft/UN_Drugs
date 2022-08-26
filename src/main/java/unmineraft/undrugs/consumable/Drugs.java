@@ -1,15 +1,20 @@
 package unmineraft.undrugs.consumable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import unmineraft.undrugs.UNDrugs;
+import unmineraft.undrugs.craftBase.BaseItemCraft;
 
 import java.util.*;
 
@@ -215,6 +220,51 @@ public class Drugs {
         }
     }
 
+    /* Obtener la receta */
+    private static String[] getRecipeConfig(String pathNameDrug){
+        String path = generalPath + "." + pathNameDrug + ".Shape";
+        List<String> shapeList = Objects.requireNonNull(config.getStringList(path));
+
+        return new String[]{shapeList.get(0), shapeList.get(1), shapeList.get(2)};
+    }
+
+    /* Poner los materiales */
+    private static void setMaterials(ShapedRecipe baseRecipe, String pathNameDrug){
+        String path = generalPath + "." + pathNameDrug + ".Ingredients";
+        List<String> ingredientsList = Objects.requireNonNull(config.getStringList(path));
+
+        for (String line : ingredientsList){
+            if (line.contains(";")){
+                String[] options = line.split(";");
+                char placeKey = options[0].charAt(0);
+                Material keyMaterial = Material.getMaterial(options[1]);
+                if (keyMaterial == null) keyMaterial = Material.BEDROCK;
+
+                baseRecipe.setIngredient(placeKey, keyMaterial);
+            }
+            if (line.contains(",")){
+                String[] options = line.split(",");
+                char placeKey = options[0].charAt(0);
+
+                Material materialBuildItem = BaseItemCraft.getItemMaterialByName(options[1]);
+                baseRecipe.setIngredient(placeKey, materialBuildItem);
+            }
+        }
+    }
+
+    /* Recetas personalizadas para la obtención de las drogas */
+    protected static void createRecipes(Plugin plugin, String pathNameDrug, ItemStack drug){
+        NamespacedKey key = new NamespacedKey(plugin, pathNameDrug);
+
+        ShapedRecipe recipe = new ShapedRecipe(key, drug);
+        String[] configRecipe = getRecipeConfig(pathNameDrug);
+        recipe.shape(configRecipe[0], configRecipe[1], configRecipe[2]);
+
+        Drugs.setMaterials(recipe, pathNameDrug);
+
+        Bukkit.addRecipe(recipe);
+    }
+
     /* Método general encargado de realizar el proceso de obtención, configuración y almacenamiento de los objetos */
     public static void buildDrugs(UNDrugs plugin){
         Drugs.config = plugin.getConfig();
@@ -231,5 +281,7 @@ public class Drugs {
 
         String pathSobredosis = generalPath + ".Sobredosis";
         Drugs.sobredosis = getEffects(pathSobredosis + ".Effects", getDuration(pathSobredosis + ".Duration"));
+
+        createRecipes(plugin, "Marihuana", Drugs.marihuana);
     }
 }

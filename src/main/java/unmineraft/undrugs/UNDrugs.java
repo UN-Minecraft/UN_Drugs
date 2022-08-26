@@ -29,8 +29,9 @@ public final class UNDrugs extends JavaPlugin {
 
         this.saveDefaultConfig();
 
-        Drugs.buildDrugs(this);
         BaseItemCraft.buildItem(this);
+
+        Drugs.buildDrugs(this);
 
         commandRegister();
         eventsRegister();

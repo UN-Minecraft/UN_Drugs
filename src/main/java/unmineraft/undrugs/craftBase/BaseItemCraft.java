@@ -9,10 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import unmineraft.undrugs.UNDrugs;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class BaseItemCraft {
     private static final String generalPath = "Config.BaseItem";
@@ -108,6 +105,22 @@ public class BaseItemCraft {
         } catch (Error error){
             return new ItemStack(Material.SAND, 1);
         }
+    }
+
+    public static Material getItemMaterialByName(String name){
+        String itemName = "";
+        if (name.equalsIgnoreCase("Cogote")) {
+            itemName = "Cogote";
+        }
+
+        if (itemName.equals("") || !(Arrays.toString(BaseItemCraft.pathItems).contains(itemName))){
+            return Material.BEDROCK;
+        }
+
+        String path = generalPath + "." + name + ".BaseItem";
+
+        if (getBaseItem(path) != null) return getBaseItem(path);
+        return Material.SAND;
     }
 
     public static void buildItem(UNDrugs plugin){
