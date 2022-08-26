@@ -103,7 +103,7 @@ public class DrugsEvent implements Listener {
 
 
     /* La creación de objetos toma de base objetos ya existentes, por si el objeto base no es consumible
-     * es necesaria la simulación de dicha característica a través de esta function */
+     * es necesaria la simulación de dicha característica a través de esta función */
     private void startEffects(Player player, ItemStack item){
         LinkedList<PotionEffect> itemEffects;
         String drugConsumed = "";
