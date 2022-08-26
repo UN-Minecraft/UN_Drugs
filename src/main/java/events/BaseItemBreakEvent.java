@@ -59,7 +59,7 @@ public class BaseItemBreakEvent implements Listener {
                     int randomNum = getRandomNumber(1, 4);
                     item.setAmount(randomNum);
 
-                    // Drop del cogote
+                    // Drop del item base
                     player.getWorld().dropItem(player.getLocation(), item);
                     player.sendMessage(plugin.name + ChatColor.WHITE + "Haz recolectado " + randomNum + " nuevas unidades");
 
