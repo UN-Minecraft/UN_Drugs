@@ -13,7 +13,7 @@ es decir el jugador pierde todos sus efectos y adquiere estos 2 nuevos: Lentitud
 - [x] Añadir permisos exclusivos al comando /drugs para que solo admins puedan usarlo
 
 
-- [ ] El item de la droga pueda ser adquirido sembrando o crafteando las respectivas plantas ejemplo:
+- [x] El item de la droga pueda ser adquirido sembrando o crafteando las respectivas plantas ejemplo:
 Marihuana: Bayas
 Perico: Azúcar
 LSD: Crafteo del Papel
