@@ -10,7 +10,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import unmineraft.undrugs.UNDrugs;
@@ -193,39 +192,18 @@ public class Drugs {
         drugsInformation.put(pathNameDrug, drug);
     }
 
-    /* Obtenemos la información ya recopilada y generamos el item, adicionamos un encantamiento de suerte
-    *  que no afecta su consumo para otorgar el efecto visual de encantamiento, en caso de error retornamos arena */
-    protected static ItemStack createItem(String pathNameDrug){
-        try {
-            HashMap<String, Object> drugInfo = Objects.requireNonNull(drugsInformation.get(pathNameDrug));
-
-            ItemStack item = new ItemStack((Material) drugInfo.get("baseItem"), 1);
-            ItemMeta meta = item.getItemMeta();
-
-            assert meta != null;
-            meta.setDisplayName((String) Objects.requireNonNull(drugInfo.get("displayName")));
-
-            meta.setLore((List<String>) Objects.requireNonNull(drugInfo.get("lore")));
-
-            meta.addEnchant(Enchantment.LUCK, 1, false);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-            meta.setCustomModelData(1);
-
-            item.setItemMeta(meta);
-            return item;
-
-        } catch (Error error){
-            return new ItemStack(Material.SAND, 1);
-        }
-    }
-
     /* Obtener la receta */
-    private static String[] getRecipeConfig(String pathNameDrug){
+    private static LinkedList<String> getRecipeConfig(String pathNameDrug){
         String path = generalPath + "." + pathNameDrug + ".Shape";
         List<String> shapeList = Objects.requireNonNull(config.getStringList(path));
 
-        return new String[]{shapeList.get(0), shapeList.get(1), shapeList.get(2)};
+        LinkedList<String> baseList = new LinkedList<>();
+
+        for (String line : shapeList){
+            baseList.addLast(line);
+        }
+
+        return baseList;
     }
 
     /* Poner los materiales */
@@ -253,16 +231,46 @@ public class Drugs {
     }
 
     /* Recetas personalizadas para la obtención de las drogas */
-    protected static void createRecipes(Plugin plugin, String pathNameDrug, ItemStack drug){
+    protected static void createRecipes(UNDrugs plugin, String pathNameDrug, ItemStack drug){
         NamespacedKey key = new NamespacedKey(plugin, pathNameDrug);
 
         ShapedRecipe recipe = new ShapedRecipe(key, drug);
-        String[] configRecipe = getRecipeConfig(pathNameDrug);
-        recipe.shape(configRecipe[0], configRecipe[1], configRecipe[2]);
+        String[] configRecipe = getRecipeConfig(pathNameDrug).toArray(new String[0]);
+        recipe.shape(configRecipe);
 
         Drugs.setMaterials(recipe, pathNameDrug);
 
         Bukkit.addRecipe(recipe);
+    }
+
+    /* Obtenemos la información ya recopilada y generamos el item, adicionamos un encantamiento de suerte
+    *  que no afecta su consumo para otorgar el efecto visual de encantamiento, en caso de error retornamos arena */
+    protected static ItemStack createItem(String pathNameDrug, UNDrugs plugin){
+        try {
+            HashMap<String, Object> drugInfo = Objects.requireNonNull(drugsInformation.get(pathNameDrug));
+
+            ItemStack item = new ItemStack((Material) drugInfo.get("baseItem"), 1);
+            ItemMeta meta = item.getItemMeta();
+
+            assert meta != null;
+            meta.setDisplayName((String) Objects.requireNonNull(drugInfo.get("displayName")));
+
+            meta.setLore((List<String>) Objects.requireNonNull(drugInfo.get("lore")));
+
+            meta.addEnchant(Enchantment.LUCK, 1, false);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+            meta.setCustomModelData(1);
+
+            item.setItemMeta(meta);
+
+            createRecipes(plugin, pathNameDrug, item);
+
+            return item;
+
+        } catch (Error error){
+            return new ItemStack(Material.SAND, 1);
+        }
     }
 
     /* Método general encargado de realizar el proceso de obtención, configuración y almacenamiento de los objetos */
@@ -274,14 +282,12 @@ public class Drugs {
             updateDrugConfig(pathNameDrug);
         }
 
-        Drugs.marihuana = createItem("Marihuana");
-        Drugs.perico = createItem("Perico");
-        Drugs.LSD = createItem("LSD");
-        Drugs.hongos = createItem("Hongos");
+        Drugs.marihuana = createItem("Marihuana", plugin);
+        Drugs.perico = createItem("Perico", plugin);
+        Drugs.LSD = createItem("LSD", plugin);
+        Drugs.hongos = createItem("Hongos", plugin);
 
         String pathSobredosis = generalPath + ".Sobredosis";
         Drugs.sobredosis = getEffects(pathSobredosis + ".Effects", getDuration(pathSobredosis + ".Duration"));
-
-        createRecipes(plugin, "Marihuana", Drugs.marihuana);
     }
 }
