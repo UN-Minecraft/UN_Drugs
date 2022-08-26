@@ -71,6 +71,7 @@ public class BaseItemBreakEvent implements Listener {
                         // Si el jugador ya tiene el item, sumamos al stack los que acaba de "cultivar"
                         if (playerInventory.contains(item.getType())){
                             int slot = playerInventory.first(item.getType());
+
                             ItemStack savedItem = playerInventory.getItem(slot);
 
                             if (savedItem == null) return;
@@ -99,6 +100,10 @@ public class BaseItemBreakEvent implements Listener {
                             player.getInventory().setItem(indexFirstEmpty, item);
                         }
                         player.sendMessage(plugin.name + ChatColor.WHITE + "Haz recolectado " + randomNum + " nuevas unidades");
+
+                        // Drop de semillas
+                        ItemStack seeds = new ItemStack(Material.BEETROOT_SEEDS, getRandomNumber(0, 2));
+                        player.getWorld().dropItem(player.getLocation(), seeds);
                     }
                 }
             }.run();
