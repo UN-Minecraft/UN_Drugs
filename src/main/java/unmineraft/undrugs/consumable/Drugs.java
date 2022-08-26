@@ -1,15 +1,19 @@
 package unmineraft.undrugs.consumable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import unmineraft.undrugs.UNDrugs;
+import unmineraft.undrugs.craftBase.BaseItemCraft;
 
 import java.util.*;
 
@@ -188,9 +192,60 @@ public class Drugs {
         drugsInformation.put(pathNameDrug, drug);
     }
 
+    /* Obtener la receta */
+    private static LinkedList<String> getRecipeConfig(String pathNameDrug){
+        String path = generalPath + "." + pathNameDrug + ".Shape";
+        List<String> shapeList = Objects.requireNonNull(config.getStringList(path));
+
+        LinkedList<String> baseList = new LinkedList<>();
+
+        for (String line : shapeList){
+            baseList.addLast(line);
+        }
+
+        return baseList;
+    }
+
+    /* Poner los materiales */
+    private static void setMaterials(ShapedRecipe baseRecipe, String pathNameDrug){
+        String path = generalPath + "." + pathNameDrug + ".Ingredients";
+        List<String> ingredientsList = Objects.requireNonNull(config.getStringList(path));
+
+        for (String line : ingredientsList){
+            if (line.contains(";")){
+                String[] options = line.split(";");
+                char placeKey = options[0].charAt(0);
+                Material keyMaterial = Material.getMaterial(options[1]);
+                if (keyMaterial == null) keyMaterial = Material.BEDROCK;
+
+                baseRecipe.setIngredient(placeKey, keyMaterial);
+            }
+            if (line.contains(",")){
+                String[] options = line.split(",");
+                char placeKey = options[0].charAt(0);
+
+                Material materialBuildItem = BaseItemCraft.getItemMaterialByName(options[1]);
+                baseRecipe.setIngredient(placeKey, materialBuildItem);
+            }
+        }
+    }
+
+    /* Recetas personalizadas para la obtención de las drogas */
+    protected static void createRecipes(UNDrugs plugin, String pathNameDrug, ItemStack drug){
+        NamespacedKey key = new NamespacedKey(plugin, pathNameDrug);
+
+        ShapedRecipe recipe = new ShapedRecipe(key, drug);
+        String[] configRecipe = getRecipeConfig(pathNameDrug).toArray(new String[0]);
+        recipe.shape(configRecipe);
+
+        Drugs.setMaterials(recipe, pathNameDrug);
+
+        Bukkit.addRecipe(recipe);
+    }
+
     /* Obtenemos la información ya recopilada y generamos el item, adicionamos un encantamiento de suerte
     *  que no afecta su consumo para otorgar el efecto visual de encantamiento, en caso de error retornamos arena */
-    protected static ItemStack createItem(String pathNameDrug){
+    protected static ItemStack createItem(String pathNameDrug, UNDrugs plugin){
         try {
             HashMap<String, Object> drugInfo = Objects.requireNonNull(drugsInformation.get(pathNameDrug));
 
@@ -208,6 +263,9 @@ public class Drugs {
             meta.setCustomModelData(1);
 
             item.setItemMeta(meta);
+
+            createRecipes(plugin, pathNameDrug, item);
+
             return item;
 
         } catch (Error error){
@@ -224,10 +282,10 @@ public class Drugs {
             updateDrugConfig(pathNameDrug);
         }
 
-        Drugs.marihuana = createItem("Marihuana");
-        Drugs.perico = createItem("Perico");
-        Drugs.LSD = createItem("LSD");
-        Drugs.hongos = createItem("Hongos");
+        Drugs.marihuana = createItem("Marihuana", plugin);
+        Drugs.perico = createItem("Perico", plugin);
+        Drugs.LSD = createItem("LSD", plugin);
+        Drugs.hongos = createItem("Hongos", plugin);
 
         String pathSobredosis = generalPath + ".Sobredosis";
         Drugs.sobredosis = getEffects(pathSobredosis + ".Effects", getDuration(pathSobredosis + ".Duration"));
