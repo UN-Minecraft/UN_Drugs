@@ -4,6 +4,7 @@ import commands.BaseItemCraftCommand;
 import commands.DrugsCommand;
 import commands.UnDrugsCommands;
 import events.BaseItemBreakEvent;
+import events.CraftDrugEvent;
 import events.DrugsEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -55,6 +56,7 @@ public final class UNDrugs extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new DrugsEvent(this), this);
         pluginManager.registerEvents(new BaseItemBreakEvent(this), this);
+        pluginManager.registerEvents(new CraftDrugEvent(this), this);
     }
 
     public void configRegister(){

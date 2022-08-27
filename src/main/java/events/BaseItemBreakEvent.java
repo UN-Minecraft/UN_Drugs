@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import unmineraft.undrugs.UNDrugs;
 import unmineraft.undrugs.craftBase.BaseItemCraft;
@@ -55,52 +54,19 @@ public class BaseItemBreakEvent implements Listener {
             new BukkitRunnable(){
                 @Override
                 public void run(){
-                    int indexFirstEmpty = player.getInventory().firstEmpty();
-
                     ItemStack item = mapBlockDropItem.get(block.getType());
-                    PlayerInventory playerInventory = player.getInventory();
-
-                    // Si no hay espacio ni un stack disponible
-                    if (indexFirstEmpty == -1 && !(playerInventory.contains(item.getType()))){
-                        player.sendMessage(plugin.name + ChatColor.WHITE + "Inventario Lleno");
-                        return;
-                    }
 
                     int randomNum = getRandomNumber(1, 4);
-                    if (mapBlockDropItem.containsKey(block.getType())){
-                        // Si el jugador ya tiene el item, sumamos al stack los que acaba de "cultivar"
-                        if (playerInventory.contains(item.getType())){
-                            int slot = playerInventory.first(item.getType());
-                            ItemStack savedItem = playerInventory.getItem(slot);
+                    item.setAmount(randomNum);
 
-                            if (savedItem == null) return;
+                    // Drop del item base
+                    player.getWorld().dropItem(player.getLocation(), item);
+                    player.sendMessage(plugin.name + ChatColor.WHITE + "Haz recolectado " + randomNum + " nuevas unidades");
 
-                            // Obtenemos el tamaño del stack
-                            int stack = savedItem.getAmount();
-
-                            // Si el stack está lleno creamos otro
-                            if (stack == 64){
-                                item.setAmount(randomNum);
-                                System.out.println(randomNum);
-
-                                // Si no tiene espacio disponible en el stack y no tiene mas espacio no se entrega el item
-                                if (indexFirstEmpty == -1){
-                                    player.sendMessage(plugin.name + ChatColor.WHITE + "Inventario Lleno");
-                                    return;
-                                }
-                                playerInventory.setItem(indexFirstEmpty, item);
-                            } else {
-                                savedItem.setAmount(stack + randomNum);
-                                playerInventory.setItem(slot, savedItem);
-                            }
-
-                        } else {
-                            item.setAmount(randomNum);
-                            player.getInventory().setItem(indexFirstEmpty, item);
-                        }
-                        player.sendMessage(plugin.name + ChatColor.WHITE + "Haz recolectado " + randomNum + " nuevas unidades");
+                    // Drop de semillas
+                    ItemStack seeds = new ItemStack(Material.BEETROOT_SEEDS, getRandomNumber(0, 2));
+                    player.getWorld().dropItem(player.getLocation(), seeds);
                     }
-                }
             }.run();
         }
     }
