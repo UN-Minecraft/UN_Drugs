@@ -1,34 +1,35 @@
 package unmineraft.undrugs.consumable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import unmineraft.undrugs.UNDrugs;
+import unmineraft.undrugs.craftBase.BaseItemCraft;
 
-
-import java.io.Console;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /*
- * Para nuevos items es necesario incluirlos en el archivo de configuracion
- * y en el arreglo de pathDruds, con el mismo nombre que posee en la configuracion
+ * Para nuevos items es necesario incluirlos en el archivo de configuración
+ * y en el arreglo de pathDrugs, con el mismo nombre que posee en la configuración
  */
 
 public class Drugs {
-    private static String generalPath = "Config.Drugs"; // Ruta de los items en el archivo de configuracion
-    private static List<String> generalLore; // Descripcion que comparten todos los items
-    private static FileConfiguration config; // Archivo de configuracion
+    private static final String generalPath = "Config.Drugs"; // Ruta de los items en el archivo de configuración
+    private static List<String> generalLore; // Descripción que comparten todos los items
+    private static FileConfiguration config; // Archivo de configuración
 
     public static String[] pathDrugs = {"Marihuana", "Perico", "LSD", "Hongos"}; // Nombre que identifica a cada uno de los items
 
-    /* Estructura de objetos que permite almancenar la informacion de cada elemento en base a nombres, luce algo asi:
+    /* Estructura de objetos que permite almacenar la información de cada elemento con base en nombres, luce algo asi:
      * drugsInformation = {
      *    "Marihuana" = {
      *          "labelEffects" = "Cadena que describe los efectos dados",
@@ -36,7 +37,7 @@ public class Drugs {
      *          "effects" = LinkedList<PotionEffects> (una estructura lineal que almacena todos los efectos de la droga),
      *          "baseItem" = Material.ITEM_A_TOMAR,
      *          "displayName" = "Cadena con el nombre del item",
-     *          "lore" = List<String> "Almacena la descripcion del item"
+     *          "lore" = List<String> "Almacena la descripción del item"
      *     }
      *    "Perico" = {...}
      *     ...
@@ -45,35 +46,35 @@ public class Drugs {
     public static HashMap<String, HashMap<String, Object>> drugsInformation = new HashMap<>();
 
     /* Variables que almacenaran el item creado, esto optimiza el plugin dado que no es necesario construir
-       el mismo elemento repetidas veces, unicamente se ejecuta el proceso una vez y el resultado es almacenado
-       para su clonacion */
+       el mismo elemento repetidas veces, únicamente se ejecuta el proceso una vez y el resultado es almacenado
+       para su clonación */
     public static ItemStack marihuana;
     public static ItemStack perico;
     public static ItemStack LSD;
     public static ItemStack hongos;
 
-    // Permite obtener la lista del archivo de configuracion que se muestran como descripcion de cada item
-    private static void updateGeneralLore(String path){
+    public static LinkedList<PotionEffect> sobredosis;
+
+    // Permite obtener la lista del archivo de configuración que se muestran como descripción de cada item
+    private static void updateGeneralLore(){
         try {
-            List<String> lore = Objects.requireNonNull(config.getStringList(path));
-            generalLore = lore;
+            generalLore = Objects.requireNonNull(config.getStringList("Config.Drugs.General_Description"));
         } catch (Error error){
-            generalLore = Arrays.asList(new String[]{""});
+            generalLore = Collections.singletonList("");
         }
     }
 
     /* Se verifica que no sea nulo y se "traduce" para que sus colores y estilos sean visibles, posteriormente se muestran
-       en la descripcion del elemento */
+       en la descripción del elemento */
     private static String getLabelEffects(String path){
         try {
-            String label = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString(path)));
-            return label;
+            return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString(path)));
         } catch (Error error){
             return "";
         }
     }
 
-    /* En minecraft la unidad de medida es el tick, algo similar a una tasa de actualizacion, esta es de
+    /* En minecraft la unidad de medida es el tick, algo similar a una tasa de actualización, esta es de
     *  20 ticks cada segundo, por este motivo es necesario multiplicar los segundos que deseamos que duren los
     *  efectos y se convierten a una unidad que entienda el juego */
     private static int getDuration(String path){
@@ -86,7 +87,7 @@ public class Drugs {
         }
     }
 
-    /* Es necesario crear "pociones", esto se realiza a traves de tener los tipos de efectos, la duracion y el amplificador */
+    /* Es necesario crear "pociones", esto se realiza a través de tener los tipos de efectos, la duración y el amplificador */
     private static LinkedList<PotionEffect> getEffects(String path, int secondsDuration){
         try {
             LinkedList<PotionEffect> auxListEffects = new LinkedList<>();
@@ -102,7 +103,7 @@ public class Drugs {
 
             return  auxListEffects;
         } catch (Error error){
-            return new LinkedList<PotionEffect>();
+            return new LinkedList<>();
         }
     }
 
@@ -116,40 +117,38 @@ public class Drugs {
         }
     }
 
-    /* Obtenemos la configuracion y generamos un item base sobre el cual se construye la droga */
+    /* Obtenemos la configuración y generamos un item base sobre el cual se construye la droga */
     private static Material getBaseItem(String path){
         try {
             String MATERIAL_ITEM_NAME = Objects.requireNonNull(config.getString(path));
-            Material selectedItem = Material.getMaterial(MATERIAL_ITEM_NAME);
 
-            return selectedItem;
+            return Material.getMaterial(MATERIAL_ITEM_NAME);
         } catch (Error error){
             return Material.ENDER_PEARL;
         }
     }
 
-    /* En caso de exister, adicionamos la descripcion adicional al objeto */
+    /* En caso de existir, adicionamos la descripción adicional al objeto */
     private static ArrayList<String> getAdditionalLore(String pathNameDrug){
         String path = generalPath + "." + pathNameDrug + ".additionalLore";
         try {
             List<String> plainText = Objects.requireNonNull(config.getStringList(path));
 
-            ArrayList<String> addLore = new ArrayList<>(plainText);
-            return addLore;
+            return new ArrayList<>(plainText);
         } catch (Error error){
             return new ArrayList<>();
         }
     }
 
-    /* Generamos la descripcion base y aplicamos los efectos que genera su consumo */
+    /* Generamos la descripción base y aplicamos los efectos que genera su consumo */
     private static ArrayList<String> getLoreItem(String pathNameDrug){
         String line;
         String path = generalPath + "." + pathNameDrug + ".Label_Effects";
         String labelEffects = getLabelEffects(path);
 
         ArrayList<String> lore = new ArrayList<>();
-        for (int i=0; i<generalLore.size(); i++){
-            line = generalLore.get(i);
+        for (String s : generalLore) {
+            line = s;
             line = ChatColor.translateAlternateColorCodes('&', line).replaceAll("%effectsDrug%", labelEffects);
             lore.add(line);
         }
@@ -157,7 +156,7 @@ public class Drugs {
         path = generalPath + "." + pathNameDrug + ".existAdditionalLore";
 
         try {
-            if (Objects.requireNonNull(config.getString(path)) == "true") {
+            if (Objects.requireNonNull(config.getString(path)).equals("true")) {
                 lore.addAll(getAdditionalLore(pathNameDrug));
             }
             return lore;
@@ -166,7 +165,7 @@ public class Drugs {
         }
     }
 
-    /* Almacenamos la informacion recuperada, la almacenamos en un hashmap y posteriormente se almacena dentro de otro
+    /* Almacenamos la información recuperada, la almacenamos en un hashmap y posteriormente se almacena dentro de otro
     *  buscando replicar la estructura ya explicada */
     private static void updateDrugConfig(String pathNameDrug){
         HashMap<String, Object> drug = new HashMap<>();
@@ -189,19 +188,71 @@ public class Drugs {
 
         drug.put("lore", getLoreItem(pathNameDrug));
 
-        // Se guarda la informacion en la variable de clase
+        // Se guarda la información en la variable de clase
         drugsInformation.put(pathNameDrug, drug);
     }
 
-    /* Obtenemos la informacion ya recopilada y generamos el item, adicionamos un encantamiento de suerte
+    /* Obtener la receta */
+    private static LinkedList<String> getRecipeConfig(String pathNameDrug){
+        String path = generalPath + "." + pathNameDrug + ".Shape";
+        List<String> shapeList = Objects.requireNonNull(config.getStringList(path));
+
+        LinkedList<String> baseList = new LinkedList<>();
+
+        for (String line : shapeList){
+            baseList.addLast(line);
+        }
+
+        return baseList;
+    }
+
+    /* Poner los materiales */
+    private static void setMaterials(ShapedRecipe baseRecipe, String pathNameDrug){
+        String path = generalPath + "." + pathNameDrug + ".Ingredients";
+        List<String> ingredientsList = Objects.requireNonNull(config.getStringList(path));
+
+        for (String line : ingredientsList){
+            if (line.contains(";")){
+                String[] options = line.split(";");
+                char placeKey = options[0].charAt(0);
+                Material keyMaterial = Material.getMaterial(options[1]);
+                if (keyMaterial == null) keyMaterial = Material.BEDROCK;
+
+                baseRecipe.setIngredient(placeKey, keyMaterial);
+            }
+            if (line.contains(",")){
+                String[] options = line.split(",");
+                char placeKey = options[0].charAt(0);
+
+                Material materialBuildItem = BaseItemCraft.getItemMaterialByName(options[1]);
+                baseRecipe.setIngredient(placeKey, materialBuildItem);
+            }
+        }
+    }
+
+    /* Recetas personalizadas para la obtención de las drogas */
+    protected static void createRecipes(UNDrugs plugin, String pathNameDrug, ItemStack drug){
+        NamespacedKey key = new NamespacedKey(plugin, pathNameDrug);
+
+        ShapedRecipe recipe = new ShapedRecipe(key, drug);
+        String[] configRecipe = getRecipeConfig(pathNameDrug).toArray(new String[0]);
+        recipe.shape(configRecipe);
+
+        Drugs.setMaterials(recipe, pathNameDrug);
+
+        Bukkit.addRecipe(recipe);
+    }
+
+    /* Obtenemos la información ya recopilada y generamos el item, adicionamos un encantamiento de suerte
     *  que no afecta su consumo para otorgar el efecto visual de encantamiento, en caso de error retornamos arena */
-    protected static ItemStack createItem(String pathNameDrug){
+    protected static ItemStack createItem(String pathNameDrug, UNDrugs plugin){
         try {
             HashMap<String, Object> drugInfo = Objects.requireNonNull(drugsInformation.get(pathNameDrug));
 
             ItemStack item = new ItemStack((Material) drugInfo.get("baseItem"), 1);
             ItemMeta meta = item.getItemMeta();
 
+            assert meta != null;
             meta.setDisplayName((String) Objects.requireNonNull(drugInfo.get("displayName")));
 
             meta.setLore((List<String>) Objects.requireNonNull(drugInfo.get("lore")));
@@ -209,7 +260,12 @@ public class Drugs {
             meta.addEnchant(Enchantment.LUCK, 1, false);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
+            meta.setCustomModelData(1);
+
             item.setItemMeta(meta);
+
+            createRecipes(plugin, pathNameDrug, item);
+
             return item;
 
         } catch (Error error){
@@ -217,18 +273,21 @@ public class Drugs {
         }
     }
 
-    /* Metodo general encargado de realizar el proceso de obtencion, configuracion y almacenamiento de los objetos */
+    /* Método general encargado de realizar el proceso de obtención, configuración y almacenamiento de los objetos */
     public static void buildDrugs(UNDrugs plugin){
         Drugs.config = plugin.getConfig();
-        Drugs.updateGeneralLore(generalPath + ".General_Description");
+        Drugs.updateGeneralLore();
 
         for (String pathNameDrug : Drugs.pathDrugs) {
             updateDrugConfig(pathNameDrug);
         }
 
-        Drugs.marihuana = createItem("Marihuana");
-        Drugs.perico = createItem("Perico");
-        Drugs.LSD = createItem("LSD");
-        Drugs.hongos = createItem("Hongos");
+        Drugs.marihuana = createItem("Marihuana", plugin);
+        Drugs.perico = createItem("Perico", plugin);
+        Drugs.LSD = createItem("LSD", plugin);
+        Drugs.hongos = createItem("Hongos", plugin);
+
+        String pathSobredosis = generalPath + ".Sobredosis";
+        Drugs.sobredosis = getEffects(pathSobredosis + ".Effects", getDuration(pathSobredosis + ".Duration"));
     }
 }

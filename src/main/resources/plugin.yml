@@ -8,6 +8,11 @@ website: https://github.com/UN-Minecraft
 
 commands:
   drugs:
-    description: Metodo de obtencion de los items de tipo droga
+    description: Método de obtención de los items de tipo droga
+    permission: op
   undrugs:
     description: Comando administrador del plugin
+    permission: op
+  baseDrug:
+    description: Otorga los items necesarios para craftear la droga
+    permission: op

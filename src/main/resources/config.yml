@@ -1,30 +1,73 @@
 Config:
   Drugs:
-    # La modificacion del "lore" de un item se basa en una estructura lineal, donde cada posicion de esta estructura
-    # representa una nueva linea, por ende, si desea que los elementos registrados vayan en una nueva linea, es necesario
+    # La modificación del "lore" de un item se basa en una estructura lineal, donde cada position de esta estructura
+    # representa una nueva línea, si desea que los elementos registrados vayan en una nueva línea, es necesario
     # que los inserte a la lista de General_Description.
     General_Description:
       - "&r&5Este item es &c&lILEGAL&r&5, que no te atrapen con el"
       - ""
       - "&5Su consumo otorga: &8%effectsDrug%"
-    # Para el manejo de los efectos es necesario:
-    # 1. Al agregar efectos a un item ya existente es necesario que este, sea ingresado
-    #    teniendo en cuenta su referencia en el juego (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html)
-    #    en mayusculas, siguiendo la estructura:
-      #   - EFECTO;NIVEL_DEL_EFECTO
-    # 2. Una vez registrado el efecto debe incluirlo en el apartado de Label_Effects, para que este sea mostrado
-    #    en el cliente de manera correcta
+      # Para el manejo de los efectos es necesario:
+      # 1. Los tipos de efectos están disponibles en esta doc: (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html)
+      #    Deben ser registrados tal cual aparecen en la página con la estructura de:
+      #       - EFECTO;NIVEL_DEL_EFECTO
+      # 2. Una vez registrado el efecto debe incluir la descripción qué ira en el lore del item, para que este sea mostrado
+      #    en el cliente de manera correcta
+      # 3. Crear una variable que almacene el nuevo item en la clase Drugs (Archivo: Drugs.java), con la estructura:
+      #       - public static ItemStack NOMBRE_NUEVO_ITEM_VARIABLE;
+      # 4. Registrar el nombre con el cual se describe el objeto en este documento, en la variable pathDrugs de la clase Drugs (Archivo: Drugs.java)
+      #       - public static String[] pathDrugs = {"Marihuana", "Perico", "LSD", "Hongos", "NOMBRE_NUEVO_ITEM_CONFIGURACION", ...}
+      # 5. Dirigirse a la función "buildDrugs" en la clase Drugs (Archivo: Drugs.java) y a la variable creada en el paso #3
+      #    almacenar el resultado de la función "createItem("NOMBRE_NUEVO_ITEM_CONFIGURACION")" quedando como:
+      #       - Drugs.NOMBRE_NUEVO_ITEM_VARIABLE = createItem(NOMBRE_NUEVO_ITEM_CONFIGURACION);
+      # 6. Para que al ser consumido los efectos carguen es necesario ir al administrador de eventos (Archivo: DrugsEvent.java),
+      #    en la función DrugsEvent debe incluir el meta del objeto a la lista, a través del código:
+      #       - isConsumable.add(Drugs.NOMBRE_NUEVO_ITEM_VARIABLE.getItemMeta())
+      # 7. En la función startEffects de la clase DrugsEvent (Archivo: DrugsEvent.java) debe copiar el código:
+      #       - if (Objects.equals(item.getItemMeta(), Drugs.NOMBRE_NUEVO_ITEM_VARIABLE.getItemMeta())) {
+      #             drugConsumed = .NOMBRE_NUEVO_ITEM_CONFIGURACION;
+      #         }
+      # 8. Agregar esta condición en la función onCommand (Archivo: DrugsCommand) en el apartado de:
+      #       - else if (message.equalsIgnoreCase(NOMBRE_DE_LA_DROGA)){
+      #            selectedItem = Drugs.NOMBRE_NUEVO_ITEM_VARIABLE;
+      #         }
+      #   Antes del código que luce:
+      #       - else {
+      #            player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento solicitado no reconocido");
+      #            return false;
+      #         }
+      # 9. Para las recetas se maneja la estructura de:
+      #         Shape:
+        #        - "P"
+        #        - "C"
+        #        - "P"
+        #      Ingredients:
+      #        - P;PAPER
+      #        - C,Cogote
+      #    Se indica la receta y el material, si es un item personalizado se separan con una coma ",", en caso opuesto
+      #    con punto y coma ";"
     Marihuana:
       DisplayName: "&r&2Marihuana"
-      BaseItem: SWEET_BERRIES
+      BaseItem: TROPICAL_FISH
       Effects:
         - HUNGER;1
         - REGENERATION;2
-      Label_Effects: "&l&7Hambre y Regeneracion"
+        - SLOW_FALLING;3
+        - JUMP;2
+      Label_Effects: "&l&7Hambre y Regeneración"
       Duration: 60
+      CustomModelData: 1
       existAdditionalLore: false
       additionalLore:
         - ""
+      Shape:
+        - "P"
+        - "C"
+        - "P"
+      Ingredients:
+        - P;PAPER
+        - C,Cogote
+      Materials:
     Perico:
       DisplayName: "&r&dPerico"
       BaseItem: SUGAR
@@ -33,30 +76,65 @@ Config:
         - WEAKNESS;1
       Label_Effects: "&l&7Velocidad y Debilidad"
       Duration: 60
+      CustomModelData: 1
       existAdditionalLore: false
       additionalLore:
         - ""
+      Shape:
+        - "S"
+        - "S"
+        - "S"
+      Ingredients:
+          - S;SUGAR
     LSD:
       DisplayName: "&r&eLSD"
-      BaseItem: PAPER
+      BaseItem: COOKIE
       Effects:
         - CONFUSION;3
         - BLINDNESS;1
         - INCREASE_DAMAGE;1
       Label_Effects: "&l&7Mareo, Ceguera y Fuerza"
       Duration: 60
+      CustomModelData: 1
       existAdditionalLore: false
       additionalLore:
         - ""
+      Shape:
+        - "P"
+        - "P"
+        - "P"
+      Ingredients:
+          - P;PAPER
     Hongos:
       DisplayName: "&r&eHongos"
       BaseItem: RED_MUSHROOM
       Effects:
         - SLOW;2
         - CONFUSION;3
-        - DAMAGE_RESISTANCE;5
+        - DAMAGE_RESISTANCE;3
       Label_Effects: "&l&7Lentitud, Mareo y Resistencia"
       Duration: 60
+      CustomModelData: 1
       existAdditionalLore: false
       additionalLore:
         - ""
+      Shape:
+        - "M"
+        - "S"
+      Ingredients:
+          - M;RED_MUSHROOM
+          - S;SUGAR
+    Sobredosis:
+      Duration: 30
+      Effects:
+        - WITHER;1
+        - SLOW;1
+        - CONFUSION;1
+        - BLINDNESS;1
+        - HUNGER;1
+  BaseItem:
+    Cogote:
+      DisplayName: "&r&2Cogote"
+      BaseItem: BEETROOT
+      Lore:
+        - "&r&fPuedes usarlo para hacer &2Marihuana"

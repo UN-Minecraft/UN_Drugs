@@ -7,17 +7,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import unmineraft.undrugs.UNDrugs;
-import unmineraft.undrugs.consumable.Drugs;
+import unmineraft.undrugs.craftBase.BaseItemCraft;
 
-public class DrugsCommand implements CommandExecutor {
+public class BaseItemCraftCommand implements CommandExecutor {
     private final UNDrugs plugin;
 
-    public DrugsCommand(UNDrugs plugin){
+    public BaseItemCraftCommand(UNDrugs plugin){
         this.plugin = plugin;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
         /*
          * Se verifica que el emisor del comando sea un jugador, esto debido a que para la asignación de una droga
          * es necesario que el usuario que lo solicita permita el manejo del inventario. En caso tal de que se realize
@@ -39,14 +39,8 @@ public class DrugsCommand implements CommandExecutor {
         String message = String.join(" ", args);
         ItemStack selectedItem;
 
-        if (message.equalsIgnoreCase("marihuana")){
-            selectedItem = Drugs.marihuana;
-        } else if (message.equalsIgnoreCase("perico")){
-            selectedItem = Drugs.perico;
-        } else if (message.equalsIgnoreCase("lsd")){
-            selectedItem = Drugs.LSD;
-        } else if (message.equalsIgnoreCase("hongos")){
-            selectedItem = Drugs.hongos;
+        if (message.equalsIgnoreCase("cogote")){
+            selectedItem = BaseItemCraft.cogote;
         } else {
             player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento solicitado no reconocido");
             return false;
@@ -60,7 +54,7 @@ public class DrugsCommand implements CommandExecutor {
 
         selectedItem.setAmount(64);
         player.getInventory().setItem(indexFirstEmpty, selectedItem);
-        player.sendMessage(this.plugin.name + ChatColor.WHITE + "Llámame si necesitas algo. Tengo perico, cuadros y bareta. Ya sabes como buscarme");
+        player.sendMessage(this.plugin.name + ChatColor.WHITE + "Al parecer eres mas de hacer las cosas por ti mismo, llámame si necesitas algo");
         return true;
     }
 }
