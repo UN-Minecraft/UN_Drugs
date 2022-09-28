@@ -6,47 +6,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import unmineraft.undrugs.UNDrugs;
+import unmineraft.undrugs.utilities.GetterConfig;
 import unmineraft.undrugs.utilities.StrEnchant;
 
 import java.util.*;
 
-public class ItemBuilder {
-    private FileConfiguration fileConfiguration;
-
+public class ItemBuilder extends GetterConfig {
     public ItemBuilder(UNDrugs plugin){
-        this.fileConfiguration = plugin.getConfig();
-    }
-
-    protected List<String> getStringList(String path){
-        List<String> stringList = this.fileConfiguration.getStringList(path);
-        if (stringList == null) return Collections.singletonList("");
-        return stringList;
-    }
-
-    protected String getPlainString(String path){
-        String baseText = this.fileConfiguration.getString(path);
-        if (baseText == null) return "";
-
-        return baseText.trim();
-    }
-
-    protected String getFormatString(String path){
-        String baseText = this.getPlainString(path);
-        return StrEnchant.applyColors(baseText);
-    }
-
-    protected int getInt(String path){
-        return this.fileConfiguration.getInt(path);
-    }
-
-    protected Material getMaterial(String path){
-        String materialName = this.getPlainString(path);
-        Material baseMaterial = Material.getMaterial(materialName);
-
-        if (baseMaterial == null){
-            throw new NullPointerException("ERROR_10: UNKNOWN MATERIAL");
-        }
-        return baseMaterial;
+        super(plugin);
     }
 
     public List<String> getGeneralDescription() {
