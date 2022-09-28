@@ -7,6 +7,6 @@ public class StrEnchant {
         return ChatColor.translateAlternateColorCodes('&', str);
     }
     public static String replace(String str, String patron, String value){
-        return ChatColor.translateAlternateColorCodes('&', str.replace(patron, value));
+        return ChatColor.translateAlternateColorCodes('&', str.replaceAll(patron, value));
     }
 }

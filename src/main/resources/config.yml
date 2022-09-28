@@ -2,7 +2,9 @@
 config:
   pluginDisplayName: "&5[&d\uD83D\uDD25%pluginName%&5]"
   generalDescription:
+    - "&r&5Este item es &c&lILEGAL&r&5, que no te atrapen con el"
     - ""
+    - "&5Su consumo otorga: &8%effectsDrug%"
 
 # Overdose status
 overdose:
@@ -15,10 +17,10 @@ overdose:
     - HUNGER;1
 
 # Items for employees for crafting
-baseMaterial:
+baseItem:
   Cogote:
     displayName: "&r&2Cogote"
-    baseItem: BEETROOT
+    baseMaterial: BEETROOT
     lore:
       - "&r&fPuedes usarlo para hacer &2Marihuana"
     obtainingInfo:
@@ -33,7 +35,7 @@ baseMaterial:
 drugs:
   marihuana:
     displayName: "&r&2Marihuana"
-    baseItem: TROPICAL_FISH
+    baseMaterial: TROPICAL_FISH
     effects:
       - HUNGER;1
       - REGENERATION;2
@@ -53,7 +55,7 @@ drugs:
       - "P"
   perico:
     displayName: "&r&dPerico"
-    baseItem: SUGAR
+    baseMaterial: SUGAR
     effects:
       - SPEED;4
       - WEAKNESS;1
@@ -70,7 +72,7 @@ drugs:
       - "S"
   lds:
     displayName: "&r&eLSD"
-    baseItem: COOKIE
+    baseMaterial: COOKIE
     effects:
       - CONFUSION;3
       - BLINDNESS;1
@@ -88,7 +90,7 @@ drugs:
       - "P"
   hongos:
     displayName: "&r&eHongos"
-    baseItem: RED_MUSHROOM
+    baseMaterial: RED_MUSHROOM
     effects:
       - SLOW;2
       - CONFUSION;3
