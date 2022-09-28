@@ -1,7 +1,6 @@
 # Attributes shared by all items
 config:
   pluginDisplayName: "&5[&d\uD83D\uDD25%pluginName%&5]"
-  pluginDisplayVersion: "&a%pluginVersion%"
   generalDescription:
     - ""
 

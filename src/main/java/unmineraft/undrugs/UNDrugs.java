@@ -27,17 +27,13 @@ public final class UNDrugs extends JavaPlugin {
     public String name;
 
     private void updateMetaData(FileConfiguration fileConfiguration){
-        String baseAttribute = this.pdfile.getVersion();
+        String baseAttribute = this.pdfile.getName();
 
-        String baseString = fileConfiguration.getString("config.pluginDisplayVersion");
-        if (baseString == null) this.version = baseAttribute;
-        this.version = StrEnchant.replace(baseString, "%pluginVersion%", baseAttribute);
-
-        baseAttribute = this.pdfile.getName();
-
-        baseString = fileConfiguration.getString("config.pluginDisplayName");
+        String baseString = fileConfiguration.getString("config.pluginDisplayName");
         if (baseString == null) this.name = baseAttribute;
         this.name = StrEnchant.replace(baseString, "%pluginName%", baseAttribute);
+
+        this.version = StrEnchant.applyColors("&a" + this.pdfile.getVersion());
     }
 
     public void commandRegister(){
