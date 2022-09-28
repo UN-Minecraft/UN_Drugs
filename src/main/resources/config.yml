@@ -1,7 +1,20 @@
 # Attributes shared by all items
 config:
+  pluginDisplayName: "&5[&d\uD83D\uDD25%pluginName%&5]"
+  pluginDisplayVersion: "&a%pluginVersion%"
   generalDescription:
     - ""
+
+# Overdose status
+overdose:
+  durationInSeconds: 30
+  effects:
+    - WITHER;1
+    - SLOW;1
+    - CONFUSION;1
+    - BLINDNESS;1
+    - HUNGER;1
+
 # Items for employees for crafting
 baseMaterial:
   Cogote:
@@ -16,6 +29,7 @@ baseMaterial:
       dropItems:
         - self;1-4
         - BEETROOT_SEEDS;0-2
+
 # Items with effect when consumed
 drugs:
   marihuana:
@@ -91,12 +105,3 @@ drugs:
     shape:
       - "M"
       - "S"
-# Overdose status
-overdose:
-  durationInSeconds: 30
-  effects:
-    - WITHER;1
-    - SLOW;1
-    - CONFUSION;1
-    - BLINDNESS;1
-    - HUNGER;1

@@ -8,11 +8,13 @@ import events.CraftDrugEvent;
 import events.DrugsEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import unmineraft.undrugs.consumable.Drugs;
 import unmineraft.undrugs.craftBase.BaseItemCraft;
+import unmineraft.undrugs.utilities.StrEnchant;
 
 import java.io.File;
 import java.util.Objects;
@@ -20,30 +22,22 @@ import java.util.Objects;
 public final class UNDrugs extends JavaPlugin {
     public String pathConfig;
 
-    PluginDescriptionFile pdfile = getDescription();
-    public String version = ChatColor.GREEN + pdfile.getVersion();
-    public String name = ChatColor.translateAlternateColorCodes('&', "&5[&d\uD83D\uDD25UNDrugs&5]");
+    PluginDescriptionFile pdfile = this.getDescription();
+    public String version;
+    public String name;
 
-    @Override
-    public void onEnable() {
-        String initPluginMessage = name + ChatColor.WHITE + " has been enabled in the version: " + version;
-        Bukkit.getConsoleSender().sendMessage(initPluginMessage);
+    private void updateMetaData(FileConfiguration fileConfiguration){
+        String baseAttribute = this.pdfile.getVersion();
 
-        this.saveDefaultConfig();
+        String baseString = fileConfiguration.getString("config.pluginDisplayVersion");
+        if (baseString == null) this.version = baseAttribute;
+        this.version = StrEnchant.replace(baseString, "%pluginVersion%", baseAttribute);
 
-        BaseItemCraft.buildItem(this);
+        baseAttribute = this.pdfile.getName();
 
-        Drugs.buildDrugs(this);
-
-        commandRegister();
-        eventsRegister();
-        configRegister();
-    }
-
-    @Override
-    public void onDisable() {
-        String endPluginMessage = name + ChatColor.RED + " has been disabled";
-        Bukkit.getConsoleSender().sendMessage(endPluginMessage);
+        baseString = fileConfiguration.getString("config.pluginDisplayName");
+        if (baseString == null) this.name = baseAttribute;
+        this.name = StrEnchant.replace(baseString, "%pluginName%", baseAttribute);
     }
 
     public void commandRegister(){
@@ -67,5 +61,28 @@ public final class UNDrugs extends JavaPlugin {
             this.getConfig().options().copyDefaults(true);
             saveConfig();
         }
+    }
+
+    @Override
+    public void onEnable() {
+        this.saveDefaultConfig();
+        this.updateMetaData(this.getConfig());
+
+        String initPluginMessage = StrEnchant.applyColors(name + "&f has been enabled in the version: " + this.version);
+        Bukkit.getConsoleSender().sendMessage(initPluginMessage);
+
+        BaseItemCraft.buildItem(this);
+
+        Drugs.buildDrugs(this);
+
+        commandRegister();
+        eventsRegister();
+        configRegister();
+    }
+
+    @Override
+    public void onDisable() {
+        String endPluginMessage = StrEnchant.applyColors(name + "&c has been disabled");
+        Bukkit.getConsoleSender().sendMessage(endPluginMessage);
     }
 }
