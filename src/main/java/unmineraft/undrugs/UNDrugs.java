@@ -74,6 +74,7 @@ public final class UNDrugs extends JavaPlugin {
 
         // Charge Overdose Effects
         Overdose overdoseStatus = new Overdose(this);
+        overdoseStatus.loadEffects();
 
         BaseItem builderBase = new BaseItem(this);
         builderBase.initItems();

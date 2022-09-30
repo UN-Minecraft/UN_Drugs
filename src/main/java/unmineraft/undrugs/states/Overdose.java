@@ -10,16 +10,17 @@ import java.util.LinkedList;
 public class Overdose extends ItemBuilder {
     public static LinkedList<PotionEffect> effects = new LinkedList<>();
 
-    public static void applyEffects(Player player){
+    public static void applyEffects(Player player) {
         player.addPotionEffects(Overdose.effects);
     }
 
-    public Overdose(UNDrugs plugin){
+    public Overdose(UNDrugs plugin) {
         super(plugin);
-        Overdose.effects = super.getEffects("states.overdose");
     }
 
-
+    public void loadEffects(){
+        Overdose.effects = super.getEffects("states.overdose");
+    }
 
     // TODO: Verify Conditions To State
 }
