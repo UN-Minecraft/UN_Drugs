@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import unmineraft.undrugs.items.builder.RecipeBuilder;
 import unmineraft.undrugs.items.consumable.DrugItem;
 import unmineraft.undrugs.items.craftBase.BaseItem;
 import unmineraft.undrugs.states.Overdose;
@@ -79,6 +80,9 @@ public final class UNDrugs extends JavaPlugin {
 
         DrugItem builderDrugs = new DrugItem(this);
         builderDrugs.initItems();
+
+        RecipeBuilder builderRecipe = new RecipeBuilder(this);
+        builderRecipe.initRecipes();
 
         commandRegister();
         eventsRegister();

@@ -11,8 +11,10 @@ import java.util.Set;
 
 public class GetterConfig {
     private FileConfiguration fileConfiguration;
+    protected UNDrugs plugin;
 
     public GetterConfig(UNDrugs plugin){
+        this.plugin = plugin;
         this.fileConfiguration = plugin.getConfig();
     }
 
