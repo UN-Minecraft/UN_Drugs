@@ -1,4 +1,4 @@
-package unmineraft.undrugs.items;
+package unmineraft.undrugs.items.builder;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

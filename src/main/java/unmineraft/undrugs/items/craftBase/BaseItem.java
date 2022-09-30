@@ -1,12 +1,13 @@
 package unmineraft.undrugs.items.craftBase;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import unmineraft.undrugs.UNDrugs;
 
 import java.util.*;
 
-public class BaseMaterial {
+public class BaseItem {
     private static FileConfiguration fileConfiguration;
 
     public static HashMap<String, Object> itemData = new HashMap<>();
@@ -14,5 +15,9 @@ public class BaseMaterial {
 
     public static void buildItems(UNDrugs plugin){
         return;
+    }
+
+    public static Material getMaterialByName(String nameItem) {
+        return null;
     }
 }

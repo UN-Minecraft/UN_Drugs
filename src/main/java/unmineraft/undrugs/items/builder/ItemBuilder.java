@@ -1,15 +1,20 @@
-package unmineraft.undrugs.items;
+package unmineraft.undrugs.items.builder;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import unmineraft.undrugs.UNDrugs;
 import unmineraft.undrugs.utilities.GetterConfig;
 import unmineraft.undrugs.utilities.StrEnchant;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ItemBuilder extends GetterConfig {
     public ItemBuilder(UNDrugs plugin){
@@ -17,18 +22,18 @@ public class ItemBuilder extends GetterConfig {
     }
 
     public List<String> getGeneralDescription() {
-        return this.getStringList("config.generalDescription");
+        return super.getStringList("config.generalDescription");
     }
 
     public int getEffectsDuration(String pathDrug){
-        int TICKS_PER_SECOND = 20, durationValue = this.getInt(pathDrug + ".durationInSeconds");
+        int TICKS_PER_SECOND = 20, durationValue = super.getInt(pathDrug + ".durationInSeconds");
         return TICKS_PER_SECOND * durationValue;
     }
 
     public HashMap<PotionEffectType, Integer> getEffectsType(String pathDrug){
         HashMap<PotionEffectType, Integer> effectTypeLevelMap = new HashMap<>();
 
-        for (String effectType : this.getStringList(pathDrug + ".effects")){
+        for (String effectType : super.getStringList(pathDrug + ".effects")){
             String[] effectInfo = effectType.trim().split(";");
 
             String effectTypeName = effectInfo[0].trim();
@@ -63,19 +68,19 @@ public class ItemBuilder extends GetterConfig {
     }
 
     public String getDisplayName(String pathDrug){
-        return this.getFormatString(pathDrug + ".displayName");
+        return super.getFormatString(pathDrug + ".displayName");
     }
 
     public Material getBaseMaterial(String pathDrug){
-        return this.getMaterial(pathDrug + ".baseMaterial");
+        return super.getMaterial(pathDrug + ".baseMaterial");
     }
 
     public List<String> getAdditionalLore(String pathDrug){
-        return this.getStringList(pathDrug + ".additionalLore");
+        return super.getStringList(pathDrug + ".additionalLore");
     }
 
     public String getLabelEffects(String pathDrug){
-        return this.getFormatString(pathDrug + ".labelEffects");
+        return super.getFormatString(pathDrug + ".labelEffects");
     }
 
     public ArrayList<String> buildLore(String pathDrug){
@@ -91,11 +96,21 @@ public class ItemBuilder extends GetterConfig {
         return itemLore;
     }
 
-    public ItemStack buildItem() {
+    public int getCustomModelData(String pathDrug){
+        return super.getInt(pathDrug + ".customModelData");
+    }
+
+    protected ItemMeta addVisualEffects(ItemMeta itemMeta){
+        itemMeta.addEnchant(Enchantment.LUCK, 1, false);
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        return itemMeta;
+    }
+
+    protected ItemStack buildItem(String pathDrug){
         return null;
     }
 
-    public void storeItem(){
+    protected void storeItem(String itemName, ItemStack itemReference){
         return;
     }
 }
