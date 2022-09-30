@@ -45,10 +45,11 @@ public class RecipeBuilder extends GetterConfig {
             }
 
             // Created Item
+            BaseItem controllerBaseItem = new BaseItem(this.plugin);
             if (line.contains(",")){
                 String[] definition = line.split(";");
                 idChar = definition[0].charAt(0);
-                keyMaterial = BaseItem.getMaterialByName(definition[1]);
+                keyMaterial = controllerBaseItem.getMaterialByName(definition[1].toLowerCase());
             }
 
             if (keyMaterial == null) continue;

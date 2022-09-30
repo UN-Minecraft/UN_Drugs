@@ -7,13 +7,13 @@ import events.BaseItemBreakEvent;
 import events.CraftDrugEvent;
 import events.DrugsEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import unmineraft.undrugs.consumable.Drugs;
-import unmineraft.undrugs.craftBase.BaseItemCraft;
+import unmineraft.undrugs.items.consumable.DrugItem;
+import unmineraft.undrugs.items.craftBase.BaseItem;
+import unmineraft.undrugs.states.Overdose;
 import unmineraft.undrugs.utilities.StrEnchant;
 
 import java.io.File;
@@ -30,9 +30,9 @@ public final class UNDrugs extends JavaPlugin {
         String baseAttribute = this.pdfile.getName();
 
         String baseString = fileConfiguration.getString("config.pluginDisplayName");
-        if (baseString == null) this.name = baseAttribute;
-        this.name = StrEnchant.replace(baseString, "%pluginName%", baseAttribute);
+        if (baseString == null) baseString = baseAttribute;
 
+        this.name = StrEnchant.replace(baseString, "%pluginName%", baseAttribute);
         this.version = StrEnchant.applyColors("&a" + this.pdfile.getVersion());
     }
 
@@ -59,17 +59,26 @@ public final class UNDrugs extends JavaPlugin {
         }
     }
 
-    @Override
-    public void onEnable() {
+    public void initPluginConfig(){
         this.saveDefaultConfig();
         this.updateMetaData(this.getConfig());
+    }
+
+    @Override
+    public void onEnable() {
+        this.initPluginConfig();
 
         String initPluginMessage = StrEnchant.applyColors(name + "&f has been enabled in the version: " + this.version);
         Bukkit.getConsoleSender().sendMessage(initPluginMessage);
 
-        BaseItemCraft.buildItem(this);
+        // Charge Overdose Effects
+        Overdose overdoseStatus = new Overdose(this);
 
-        Drugs.buildDrugs(this);
+        BaseItem builderBase = new BaseItem(this);
+        builderBase.initItems();
+
+        DrugItem builderDrugs = new DrugItem(this);
+        builderDrugs.initItems();
 
         commandRegister();
         eventsRegister();

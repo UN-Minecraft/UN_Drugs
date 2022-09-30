@@ -1,17 +1,23 @@
 package unmineraft.undrugs.utilities;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import unmineraft.undrugs.UNDrugs;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class GetterConfig {
     private FileConfiguration fileConfiguration;
 
     public GetterConfig(UNDrugs plugin){
         this.fileConfiguration = plugin.getConfig();
+    }
+
+    protected boolean checkExistence(String path){
+        return this.fileConfiguration.contains(path);
     }
 
     protected List<String> getStringList(String path){

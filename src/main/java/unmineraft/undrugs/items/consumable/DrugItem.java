@@ -15,7 +15,7 @@ import java.util.Set;
 public class DrugItem extends ItemBuilder{
     public static HashMap<String, ItemStack> itemMap = new HashMap<>();
 
-    private final FileConfiguration fileConfiguration;
+    protected final FileConfiguration fileConfiguration;
 
     public DrugItem(UNDrugs plugin){
         super(plugin);
@@ -48,8 +48,11 @@ public class DrugItem extends ItemBuilder{
 
         if (itemMeta == null) throw new NullPointerException("ERROR_50: NULL ITEM META WITH VISUAL EFFECTS");
 
-        int customModelData = super.getCustomModelData(pathDrug);
-        itemMeta.setCustomModelData(customModelData);
+        // The method is generalized to facilitate the creation of base items
+        if (super.checkExistence(pathDrug + ".customModelData")) {
+            int customModelData = super.getCustomModelData(pathDrug);
+            itemMeta.setCustomModelData(customModelData);
+        }
 
         item.setItemMeta(itemMeta);
 
@@ -61,7 +64,7 @@ public class DrugItem extends ItemBuilder{
         DrugItem.itemMap.put(itemName, itemReference);
     }
 
-    public void initDrugs(){
+    public void initItems(){
         Set<String> sectionNames = this.getSectionDrugs();
         String path;
 

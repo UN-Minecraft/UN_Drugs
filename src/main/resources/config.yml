@@ -7,22 +7,24 @@ config:
     - "&5Su consumo otorga: &8%effectsDrug%"
 
 # Overdose status
-overdose:
-  durationInSeconds: 30
-  effects:
-    - WITHER;1
-    - SLOW;1
-    - CONFUSION;1
-    - BLINDNESS;1
-    - HUNGER;1
+states:
+  overdose:
+    durationInSeconds: 30
+    effects:
+      - WITHER;1
+      - SLOW;1
+      - CONFUSION;1
+      - BLINDNESS;1
+      - HUNGER;1
 
 # Items for employees for crafting
-baseItem:
-  Cogote:
+baseItems:
+  cogote:
     displayName: "&r&2Cogote"
     baseMaterial: BEETROOT
     lore:
       - "&r&fPuedes usarlo para hacer &2Marihuana"
+    customModelData: 1
     obtainingInfo:
       type: crop
       blockMaterial: BEETROOTS
