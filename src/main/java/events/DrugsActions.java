@@ -1,6 +1,5 @@
 package events;
 
-import com.sun.source.tree.BinaryTree;
 import controllers.ConsumeController;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -12,7 +11,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import unmineraft.undrugs.UNDrugs;
 import unmineraft.undrugs.items.consumable.DrugItem;
 import unmineraft.undrugs.states.Overdose;
@@ -24,7 +22,7 @@ import java.util.UUID;
 
 public class DrugsActions implements Listener {
     private final UNDrugs plugin;
-    private HashMap<UUID, Long> cooldownAnimationConsume = new HashMap<>();
+    private final HashMap<UUID, Long> cooldownAnimationConsume = new HashMap<>();
 
     public DrugsActions(UNDrugs plugin){
         this.plugin = plugin;
@@ -85,7 +83,6 @@ public class DrugsActions implements Listener {
 
         // Otherwise
         ConsumeController.applyEffects(player, drugMeta);
-        return;
     }
 
     @EventHandler
@@ -131,8 +128,6 @@ public class DrugsActions implements Listener {
         }, 10L);
 
         // Clear id player from cooldown map
-        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-            this.cooldownAnimationConsume.remove(idPlayer);
-        }, 10L);
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.cooldownAnimationConsume.remove(idPlayer), 10L);
     }
 }
