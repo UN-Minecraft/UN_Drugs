@@ -16,20 +16,15 @@ import java.util.Set;
 
 public class DrugItem extends ItemBuilder{
     public static HashMap<String, ItemStack> itemMap = new HashMap<>();
+    public static HashMap<String, ItemMeta> itemMetaMap = new HashMap<>();
+    public static HashMap<String, Material> itemTypeMap = new HashMap<>();
+
+
     public static HashMap<ItemMeta, LinkedList<PotionEffect>> itemEffectsMap = new HashMap<>();
     public static HashMap<ItemMeta, Integer> itemEffectsDurationMap = new HashMap<>();
 
     public static Set<String> getDrugsName(){
         return DrugItem.itemMap.keySet();
-    }
-
-    public static LinkedList<ItemMeta> getItemsMeta(){
-        LinkedList<ItemMeta> itemsMeta = new LinkedList<>();
-        for (String name : DrugItem.getDrugsName()){
-            itemsMeta.add(DrugItem.itemMap.get(name).getItemMeta());
-        }
-
-        return itemsMeta;
     }
 
     protected final FileConfiguration fileConfiguration;
@@ -85,6 +80,8 @@ public class DrugItem extends ItemBuilder{
     @Override
     protected void storeItem(String itemName, ItemStack itemReference){
         DrugItem.itemMap.put(itemName, itemReference);
+        DrugItem.itemMetaMap.put(itemName, itemReference.getItemMeta());
+        DrugItem.itemTypeMap.put(itemName, itemReference.getType());
     }
 
     public void initItems(){

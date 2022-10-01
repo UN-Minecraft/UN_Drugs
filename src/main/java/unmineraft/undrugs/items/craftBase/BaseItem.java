@@ -3,6 +3,7 @@ package unmineraft.undrugs.items.craftBase;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import unmineraft.undrugs.UNDrugs;
 import unmineraft.undrugs.items.consumable.DrugItem;
 
@@ -11,6 +12,8 @@ import java.util.Set;
 
 public class BaseItem extends DrugItem {
     public static HashMap<String, ItemStack> baseItemMap = new HashMap<>();
+    public static HashMap<String, ItemMeta> baseItemMetaMap = new HashMap<>();
+    public static HashMap<String, Material> baseItemTypeMap = new HashMap<>();
 
     public BaseItem(UNDrugs plugin){
         super(plugin);
@@ -33,6 +36,8 @@ public class BaseItem extends DrugItem {
     @Override
     protected void storeItem(String itemName, ItemStack itemReference){
         BaseItem.baseItemMap.put(itemName, itemReference);
+        BaseItem.baseItemMetaMap.put(itemName, itemReference.getItemMeta());
+        BaseItem.baseItemTypeMap.put(itemName, itemReference.getType());
     }
 
     @Override

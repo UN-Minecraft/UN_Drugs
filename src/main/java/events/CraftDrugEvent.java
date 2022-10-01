@@ -6,55 +6,33 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import unmineraft.undrugs.UNDrugs;
-import unmineraft.undrugs.consumable.Drugs;
-import unmineraft.undrugs.craftBase.BaseItemCraft;
-
-import java.util.Objects;
+import unmineraft.undrugs.items.consumable.DrugItem;
+import unmineraft.undrugs.items.craftBase.BaseItem;
 
 public class CraftDrugEvent implements Listener {
-    private static UNDrugs plugin;
+    private UNDrugs plugin;
+
+    public CraftDrugEvent(UNDrugs plugin){
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onPrepareItemCraft(PrepareItemCraftEvent event){
-        if (event.getInventory().getResult() == null) return;
+        ItemStack itemResult = event.getInventory().getResult();
+        if (itemResult == null) return;
+        if (!DrugItem.itemMetaMap.containsValue(itemResult.getItemMeta())) return;
 
+        CraftingInventory craftingInventory = event.getInventory();
+        ItemStack[] items = craftingInventory.getMatrix();
 
-        // Manejo del cogote como elemento válido para la marihuana
-        if (event.getInventory().getResult().getType() == Drugs.marihuana.getType()){
-            CraftingInventory inventoryCraft = event.getInventory();
-
-            ItemStack[] items = inventoryCraft.getMatrix();
-
-            int[] positions = {3, 4, 5};
-            boolean isValidBeetroot = true;
-
-            /*
-             * El cogote de manera forzosa debe estar en el medio, asi que evaluamos
-             * todas las posiciones posibles, si el item es del mismo tipo, pero no
-             * tiene el mismo meta, se asume que no es el cogote y por ende es inválido
-             */
-            for (int pos : positions){
-                if (items[pos] != null) {
-                    if (items[pos].getType() == BaseItemCraft.cogote.getType()) {
-                        // Verificamos que los display names sean iguales
-                        String itemDisplayName = Objects.requireNonNull(items[pos].getItemMeta()).getDisplayName();
-                        String cogoteDisplayName = Objects.requireNonNull(BaseItemCraft.cogote.getItemMeta()).getDisplayName();
-
-                        if (!(itemDisplayName.equals(cogoteDisplayName))) isValidBeetroot = false;
-                    }
-                }
-            }
-
-            // Si no es válido, no generara la marihuana
-            if (!isValidBeetroot){
-                event.getInventory().setResult(new ItemStack(Material.AIR));
-            }
+        /* If there is an item in the crafting inventory that shares an ItemMeta with a base item
+         * we cancel the change to air */
+        for (ItemStack item : items){
+            if (!BaseItem.baseItemMetaMap.containsValue(item.getItemMeta())) continue;
+            return;
         }
-    }
 
-    public CraftDrugEvent(UNDrugs plugin){
-        CraftDrugEvent.plugin = plugin;
+        event.getInventory().setResult(new ItemStack(Material.AIR));
     }
 }
