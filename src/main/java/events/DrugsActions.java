@@ -88,9 +88,9 @@ public class DrugsActions implements Listener {
     @EventHandler
     public void simulateConsume(PlayerInteractEvent event){
         if (event.getItem() == null) return;
-        ItemStack item = event.getItem();
+        ItemMeta itemMeta = event.getItem().getItemMeta();
 
-        if (!DrugItem.itemMap.containsValue(item)) return;
+        if (!DrugItem.itemMetaMap.containsValue(itemMeta)) return;
 
         Action action = event.getAction();
 
@@ -113,6 +113,7 @@ public class DrugsActions implements Listener {
 
         // Item and effects management
         Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+            ItemStack item = event.getItem();
             if (player.getGameMode() != GameMode.CREATIVE){
                 if (item.getAmount() == 1){
                     player.getInventory().removeItem(item);
