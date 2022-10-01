@@ -20,7 +20,7 @@ public class CraftDrugEvent implements Listener {
     @EventHandler
     public void onPrepareItemCraft(PrepareItemCraftEvent event){
         ItemStack itemResult = event.getInventory().getResult();
-        if (itemResult == null) return;
+        if (itemResult == null || itemResult.getItemMeta() == null) return;
         if (!DrugItem.itemMetaMap.containsValue(itemResult.getItemMeta())) return;
 
         CraftingInventory craftingInventory = event.getInventory();
