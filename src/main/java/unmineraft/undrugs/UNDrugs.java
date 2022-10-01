@@ -5,7 +5,7 @@ import commands.DrugsCommand;
 import commands.UnDrugsCommands;
 import events.BaseItemBreakEvent;
 import events.CraftDrugEvent;
-import events.DrugsEvent;
+import events.DrugsActions;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -15,6 +15,7 @@ import unmineraft.undrugs.items.builder.RecipeBuilder;
 import unmineraft.undrugs.items.consumable.DrugItem;
 import unmineraft.undrugs.items.craftBase.BaseItem;
 import unmineraft.undrugs.states.Overdose;
+import unmineraft.undrugs.utilities.MessagesConfig;
 import unmineraft.undrugs.utilities.StrEnchant;
 
 import java.io.File;
@@ -45,7 +46,7 @@ public final class UNDrugs extends JavaPlugin {
 
     public void eventsRegister(){
         PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new DrugsEvent(this), this);
+        pluginManager.registerEvents(new DrugsActions(this), this);
         pluginManager.registerEvents(new BaseItemBreakEvent(this), this);
         pluginManager.registerEvents(new CraftDrugEvent(this), this);
     }
@@ -72,8 +73,13 @@ public final class UNDrugs extends JavaPlugin {
         String initPluginMessage = StrEnchant.applyColors(name + "&f has been enabled in the version: " + this.version);
         Bukkit.getConsoleSender().sendMessage(initPluginMessage);
 
+        // Load Messages
+        MessagesConfig messagesController = new MessagesConfig(this);
+        messagesController.loadMessages();
+
         // Charge Overdose Effects
         Overdose overdoseStatus = new Overdose(this);
+        overdoseStatus.loadDurationEffects();
         overdoseStatus.loadEffects();
 
         BaseItem builderBase = new BaseItem(this);

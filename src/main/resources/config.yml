@@ -108,3 +108,7 @@ drugs:
     shape:
       - "M"
       - "S"
+messages:
+  overdose: "&cTe ha dado una sobredosis, cuidado con mezclar sustancias"
+  consume: "&fHas consumido: %drugDisplayName%"
+  cooldownConsume: "&cCuidado, consumir tan rapido puede generarte mal viaje"

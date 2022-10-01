@@ -5,15 +5,32 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
 import unmineraft.undrugs.UNDrugs;
 import unmineraft.undrugs.items.builder.ItemBuilder;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 public class DrugItem extends ItemBuilder{
     public static HashMap<String, ItemStack> itemMap = new HashMap<>();
+    public static HashMap<ItemMeta, LinkedList<PotionEffect>> itemEffectsMap = new HashMap<>();
+    public static HashMap<ItemMeta, Integer> itemEffectsDurationMap = new HashMap<>();
+
+    public static Set<String> getDrugsName(){
+        return DrugItem.itemMap.keySet();
+    }
+
+    public static LinkedList<ItemMeta> getItemsMeta(){
+        LinkedList<ItemMeta> itemsMeta = new LinkedList<>();
+        for (String name : DrugItem.getDrugsName()){
+            itemsMeta.add(DrugItem.itemMap.get(name).getItemMeta());
+        }
+
+        return itemsMeta;
+    }
 
     protected final FileConfiguration fileConfiguration;
 
@@ -27,6 +44,11 @@ public class DrugItem extends ItemBuilder{
         if (drugsSection == null) throw new NullPointerException("ERROR_20: DRUGS SECTION UNRECOGNIZED");
 
         return drugsSection.getKeys(false);
+    }
+
+    private void storeEffects(String pathDrug, ItemMeta itemMeta){
+        DrugItem.itemEffectsMap.put(itemMeta, super.getEffects(pathDrug));
+        DrugItem.itemEffectsDurationMap.put(itemMeta, super.getEffectsDuration(pathDrug));
     }
 
     @Override
@@ -56,6 +78,7 @@ public class DrugItem extends ItemBuilder{
 
         item.setItemMeta(itemMeta);
 
+        this.storeEffects(pathDrug, itemMeta);
         return item;
     }
 

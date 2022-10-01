@@ -1,6 +1,7 @@
 package unmineraft.undrugs.utilities;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class StrEnchant {
     public static String applyColors(String str){
