@@ -1,16 +1,13 @@
 package unmineraft.undrugs.utilities;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import unmineraft.undrugs.UNDrugs;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class GetterConfig {
-    private FileConfiguration fileConfiguration;
+    private final FileConfiguration fileConfiguration;
     protected UNDrugs plugin;
 
     public GetterConfig(UNDrugs plugin){
@@ -23,9 +20,7 @@ public class GetterConfig {
     }
 
     protected List<String> getStringList(String path){
-        List<String> stringList = this.fileConfiguration.getStringList(path);
-        if (stringList == null) return Collections.singletonList("");
-        return stringList;
+        return this.fileConfiguration.getStringList(path);
     }
 
     protected String getPlainString(String path){

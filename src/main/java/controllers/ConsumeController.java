@@ -1,17 +1,16 @@
 package controllers;
 
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import unmineraft.undrugs.items.consumable.DrugItem;
 import unmineraft.undrugs.utilities.MessagesConfig;
 import unmineraft.undrugs.utilities.StrEnchant;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.UUID;
 
 public class ConsumeController {
     private static final HashMap<UUID, Date> lastConsumeDate = new HashMap<>();
@@ -26,7 +25,6 @@ public class ConsumeController {
     }
 
     public static void setLastConsumedDate(Player player, Date newDate){
-        UUID idPlayer = player.getUniqueId();
         ConsumeController.lastConsumeDate.put(player.getUniqueId(), newDate);
     }
 
@@ -38,7 +36,6 @@ public class ConsumeController {
     }
 
     public static void setLastOverdoseDate(Player player, Date newDate){
-        UUID idPlayer = player.getUniqueId();
         ConsumeController.lastOverdoseDate.put(player.getUniqueId(), newDate);
     }
 
@@ -50,7 +47,6 @@ public class ConsumeController {
     }
 
     public static void setLastConsumedItem(Player player, ItemMeta itemMeta){
-        UUID idPlayer = player.getUniqueId();
         ConsumeController.lastConsumedItem.put(player.getUniqueId(), itemMeta);
     }
 

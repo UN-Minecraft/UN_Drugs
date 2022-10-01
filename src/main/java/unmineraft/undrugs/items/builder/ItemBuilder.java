@@ -38,7 +38,7 @@ public class ItemBuilder extends GetterConfig {
 
             String effectTypeName = effectInfo[0].trim();
 
-            int effectTypeLevel = 0;
+            int effectTypeLevel;
             try {
                 effectTypeLevel = Integer.parseInt(effectInfo[1]) - 1;
             } catch (Exception exception){
@@ -110,7 +110,5 @@ public class ItemBuilder extends GetterConfig {
         return null;
     }
 
-    protected void storeItem(String itemName, ItemStack itemReference){
-        return;
-    }
+    protected void storeItem(String itemName, ItemStack itemReference){}
 }
