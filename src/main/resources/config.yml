@@ -112,3 +112,5 @@ messages:
   overdose: "&cTe ha dado una sobredosis, cuidado con mezclar sustancias"
   consume: "&fHas consumido: %drugDisplayName%"
   cooldownConsume: "&cCuidado, consumir tan rapido puede generarte mal viaje"
+  insufficientAgeCrop: "&fAun no ha crecido lo suficiente"
+  validCrop: "&fHaz recolectado %stackAmountDrop% nuevas unidades de %itemDisplayName%"

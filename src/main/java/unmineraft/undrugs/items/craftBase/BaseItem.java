@@ -20,7 +20,7 @@ public class BaseItem extends DrugItem {
     }
 
     public Material getMaterialByName(String nameItem) {
-        String itemPath = "baseItems." + nameItem;
+        String itemPath = "baseItems." + nameItem.toLowerCase();
 
         if (!super.checkExistence(itemPath + ".baseMaterial")) return null;
         return super.getBaseMaterial(itemPath);

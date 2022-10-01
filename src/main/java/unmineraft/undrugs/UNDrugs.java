@@ -46,6 +46,8 @@ public final class UNDrugs extends JavaPlugin {
 
     public void eventsRegister(){
         PluginManager pluginManager = getServer().getPluginManager();
+
+        // Initialize events listener
         pluginManager.registerEvents(new DrugsActions(this), this);
         pluginManager.registerEvents(new BaseItemBreakEvent(this), this);
         pluginManager.registerEvents(new CraftDrugEvent(this), this);

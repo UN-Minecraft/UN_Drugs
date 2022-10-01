@@ -1,10 +1,12 @@
 package unmineraft.undrugs.utilities;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import unmineraft.undrugs.UNDrugs;
 
 import java.util.List;
+import java.util.Set;
 
 public class GetterConfig {
     private final FileConfiguration fileConfiguration;
@@ -47,5 +49,11 @@ public class GetterConfig {
             throw new NullPointerException("ERROR_10: UNKNOWN MATERIAL");
         }
         return baseMaterial;
+    }
+
+    protected Set<String> getSections(String path){
+        ConfigurationSection configurationSection = this.fileConfiguration.getConfigurationSection(path);
+        if (configurationSection == null) return null;
+        return configurationSection.getKeys(false);
     }
 }
