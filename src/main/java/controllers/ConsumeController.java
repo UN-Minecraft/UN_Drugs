@@ -50,7 +50,18 @@ public class ConsumeController {
         ConsumeController.lastConsumedItem.put(player.getUniqueId(), itemMeta);
     }
 
-    public static boolean checkActiveEffects(Date date, int durationEffects){
+    public static void clearRegisters(Player player) {
+        UUID idPlayer = player.getUniqueId();
+
+        // Clear Registers
+        ConsumeController.lastConsumedItem.remove(idPlayer);
+        ConsumeController.lastConsumeDate.remove(idPlayer);
+        ConsumeController.lastOverdoseDate.remove(idPlayer);
+    }
+
+    public static boolean checkActiveEffects(Date date, int durationEffects, Player player){
+        if (player.getActivePotionEffects().isEmpty()) return false;
+
         Date actualDate = new Date(System.currentTimeMillis());
         long diff = date.getTime() - actualDate.getTime();
 

@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import unmineraft.undrugs.UNDrugs;
-import unmineraft.undrugs.craftBase.BaseItemCraft;
+import unmineraft.undrugs.items.craftBase.BaseItem;
 
 public class BaseItemCraftCommand implements CommandExecutor {
     private final UNDrugs plugin;
@@ -40,7 +40,7 @@ public class BaseItemCraftCommand implements CommandExecutor {
         ItemStack selectedItem;
 
         if (message.equalsIgnoreCase("cogote")){
-            selectedItem = BaseItemCraft.cogote;
+            selectedItem = BaseItem.baseItemMap.get("cogote");
         } else {
             player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento solicitado no reconocido");
             return false;

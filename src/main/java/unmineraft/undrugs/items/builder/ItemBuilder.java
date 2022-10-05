@@ -79,6 +79,13 @@ public class ItemBuilder extends GetterConfig {
         return super.getStringList(pathDrug + ".additionalLore");
     }
 
+    public List<String> getGeneralItemLore(String pathDrug){
+        String type = pathDrug.split("\\.")[0];
+        if (type == null) return new ArrayList<>();
+
+        return super.getStringList("config.generalItemsDescription." + type);
+    }
+
     public String getLabelEffects(String pathDrug){
         return super.getFormatString(pathDrug + ".labelEffects");
     }
@@ -88,9 +95,15 @@ public class ItemBuilder extends GetterConfig {
 
         ArrayList<String> itemLore = new ArrayList<>();
         for (String line : this.getGeneralDescription()){
-            String finalLine = StrEnchant.replace(line, "%effectsDrug%", labelEffects);
-            itemLore.add(finalLine);
+            itemLore.add(StrEnchant.applyColors(line));
         }
+
+        // Add general lore taking into account the type of item
+        for (String line : this.getGeneralItemLore(pathDrug)){
+            String tempLine = StrEnchant.replace(line, "%effectsDrug%", labelEffects);
+            itemLore.add(tempLine);
+        }
+
         itemLore.addAll(this.getAdditionalLore(pathDrug));
 
         return itemLore;

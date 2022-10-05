@@ -38,6 +38,4 @@ public class Overdose extends ItemBuilder {
     public void loadDurationEffects(){
         Overdose.effectsDuration = super.getEffectsDuration("states.overdose");
     }
-
-    // TODO: Verify Conditions To State
 }

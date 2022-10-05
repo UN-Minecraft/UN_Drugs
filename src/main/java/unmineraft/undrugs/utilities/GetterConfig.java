@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import unmineraft.undrugs.UNDrugs;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +22,8 @@ public class GetterConfig {
         return this.fileConfiguration.contains(path);
     }
 
-    protected List<String> getStringList(String path){
+    protected List<String> getStringList(String path) {
+        if (!this.checkExistence(path)) return new ArrayList<>();
         return this.fileConfiguration.getStringList(path);
     }
 

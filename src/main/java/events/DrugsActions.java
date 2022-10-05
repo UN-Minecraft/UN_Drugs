@@ -32,7 +32,7 @@ public class DrugsActions implements Listener {
         // If the overdose is active, return true
         Date lastOverdoseDate = ConsumeController.getLastOverdoseDate(player);
         if (lastOverdoseDate != null) {
-            return ConsumeController.checkActiveEffects(lastOverdoseDate, Overdose.effectsDuration);
+            return ConsumeController.checkActiveEffects(lastOverdoseDate, Overdose.effectsDuration, player);
         }
         return false;
     }
@@ -49,7 +49,7 @@ public class DrugsActions implements Listener {
 
         /* If the record of the player's last use is more recent than the duration of the effects of the
          * last drug consumed, returns true */
-        return ConsumeController.checkActiveEffects(actualDate, durationEffects);
+        return ConsumeController.checkActiveEffects(actualDate, durationEffects, player);
     }
 
     private boolean isDifferentDrugActive(Player player, ItemStack drugConsumed){
@@ -70,7 +70,7 @@ public class DrugsActions implements Listener {
 
 
         // If the player has no active effects, apply drug effects
-        if (player.getActivePotionEffects().size() == 0){
+        if (player.getActivePotionEffects().isEmpty()){
             ConsumeController.applyEffects(player, drugMeta);
             return;
         }
@@ -114,14 +114,15 @@ public class DrugsActions implements Listener {
         // Item and effects management
         Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
             ItemStack item = event.getItem();
-            if (player.getGameMode() != GameMode.CREATIVE){
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                if (item.getAmount() > 1) {
+                    item.setAmount(item.getAmount() - 1);
+                }
+
                 if (item.getAmount() == 1){
                     player.getInventory().removeItem(item);
                     player.updateInventory();
-                    event.setCancelled(true);
-                    return;
                 }
-                item.setAmount(item.getAmount() - 1);
             }
             // Play a sound and apply effects
             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 1.0F, 1.0F);
@@ -129,6 +130,6 @@ public class DrugsActions implements Listener {
         }, 10L);
 
         // Clear id player from cooldown map
-        Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.cooldownAnimationConsume.remove(idPlayer), 10L);
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.cooldownAnimationConsume.remove(idPlayer), 20L);
     }
 }

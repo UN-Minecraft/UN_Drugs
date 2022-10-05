@@ -6,6 +6,7 @@ import commands.UnDrugsCommands;
 import events.BaseItemBreakEvent;
 import events.CraftDrugEvent;
 import events.DrugsActions;
+import events.PlayerClearEffects;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -50,7 +51,10 @@ public final class UNDrugs extends JavaPlugin {
         // Initialize events listener
         pluginManager.registerEvents(new DrugsActions(this), this);
         pluginManager.registerEvents(new BaseItemBreakEvent(this), this);
-        pluginManager.registerEvents(new CraftDrugEvent(this), this);
+        pluginManager.registerEvents(new CraftDrugEvent(), this);
+
+        // Update State of Player
+        pluginManager.registerEvents(new PlayerClearEffects(), this);
     }
 
     public void configRegister(){

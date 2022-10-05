@@ -3,9 +3,12 @@ config:
   pluginDisplayName: "&5[&d\uD83D\uDD25%pluginName%&5]"
   generalDescription:
     - "&r&5Este item es &c&lILEGAL&r&5, que no te atrapen con el"
-    - ""
-    - "&5Su consumo otorga: &8%effectsDrug%"
-
+  generalItemsDescription:
+      drugs:
+        - ""
+        - "&5Su consumo otorga: &8%effectsDrug%"
+      baseItems:
+        - ""
 # Overdose status
 states:
   overdose:

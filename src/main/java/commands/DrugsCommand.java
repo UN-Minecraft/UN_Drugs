@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import unmineraft.undrugs.UNDrugs;
-import unmineraft.undrugs.consumable.Drugs;
+import unmineraft.undrugs.items.consumable.DrugItem;
 
 public class DrugsCommand implements CommandExecutor {
     private final UNDrugs plugin;
@@ -40,13 +40,13 @@ public class DrugsCommand implements CommandExecutor {
         ItemStack selectedItem;
 
         if (message.equalsIgnoreCase("marihuana")){
-            selectedItem = Drugs.marihuana;
+            selectedItem = DrugItem.itemMap.get("marihuana");
         } else if (message.equalsIgnoreCase("perico")){
-            selectedItem = Drugs.perico;
+            selectedItem = DrugItem.itemMap.get("perico");
         } else if (message.equalsIgnoreCase("lsd")){
-            selectedItem = Drugs.LSD;
+            selectedItem = DrugItem.itemMap.get("lsd");
         } else if (message.equalsIgnoreCase("hongos")){
-            selectedItem = Drugs.hongos;
+            selectedItem = DrugItem.itemMap.get("hongos");
         } else {
             player.sendMessage(this.plugin.name + ChatColor.DARK_PURPLE + "Elemento solicitado no reconocido");
             return false;

@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import unmineraft.undrugs.UNDrugs;
 import unmineraft.undrugs.items.craftBase.BaseItem;
 import unmineraft.undrugs.utilities.GetterConfig;
@@ -70,12 +71,24 @@ public class BaseItemBreakEvent extends GetterConfig implements Listener {
             String[] options = line.split(";");
             int itemStackNum = this.getRandomAmount(options[1]);
 
+            if (itemStackNum == 0) continue;
+
             // Base Item
             if (options[0].equals("self")){
                 String sectionName = this.itemsCropBlocksMap.get(blockType);
 
                 if (!BaseItem.baseItemMap.containsKey(sectionName)) throw new IllegalArgumentException("ERROR_150: BASE ITEM NON EXIST WITH THAT NAME");
                 dropItem = BaseItem.baseItemMap.get(sectionName);
+
+                // Send player message
+                ItemMeta dropItemMeta = dropItem.getItemMeta();
+                String displayName = "";
+                if (dropItemMeta != null) {
+                    displayName = dropItemMeta.getDisplayName();
+                }
+
+                String message = MessagesConfig.getMessage("validCrop").replaceAll("%stackAmountDrop%", String.valueOf(itemStackNum)).replaceAll("%itemDisplayName%", displayName);
+                player.sendMessage(message);
             }
             // Additional items
             else {
@@ -86,15 +99,11 @@ public class BaseItemBreakEvent extends GetterConfig implements Listener {
             }
 
             // Set the stack
-            if (dropItem == null || dropItem.getItemMeta() == null) continue;
+            if (dropItem.getItemMeta() == null) continue;
             dropItem.setAmount(itemStackNum);
 
             // Drop item in block location
             player.getWorld().dropItem(block.getLocation(), dropItem);
-
-            // Send player message
-            String message = MessagesConfig.getMessage("validCrop").replaceAll("%stackAmountDrop%", String.valueOf(itemStackNum)).replaceAll("%itemDisplayName%", dropItem.getItemMeta().getDisplayName());
-            player.sendMessage(message);
         }
     }
 
