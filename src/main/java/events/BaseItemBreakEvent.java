@@ -1,83 +1,131 @@
 package events;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.inventory.meta.ItemMeta;
 import unmineraft.undrugs.UNDrugs;
-import unmineraft.undrugs.craftBase.BaseItemCraft;
+import unmineraft.undrugs.items.craftBase.BaseItem;
+import unmineraft.undrugs.utilities.GetterConfig;
+import unmineraft.undrugs.utilities.MessagesConfig;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-public class BaseItemBreakEvent implements Listener {
-    private static UNDrugs plugin;
+public class BaseItemBreakEvent extends GetterConfig implements Listener {
+    private final HashMap<Material, String> itemsCropBlocksMap = new HashMap<>();
+    private final HashMap<Material, List<String>> blockCropDropItemsNameMap = new HashMap<>();
 
-    private static final LinkedList<Material> isBaseBlockItem = new LinkedList<>();
-    private static final HashMap<Material, ItemStack> mapBlockDropItem = new HashMap<>();
-
-    private static int getRandomNumber(int min, int max){
-        return (int) (Math.floor(Math.random() * (max - min + 1)) + min);
+    public BaseItemBreakEvent(UNDrugs plugin){
+        super(plugin);
+        this.loadBaseItems();
     }
 
-    @EventHandler
-    public void getBaseItem(BlockBreakEvent event){
-        if (event.getBlock() != null && event.getPlayer() != null){
-            Block block = event.getBlock();
+    private void loadBaseItemsTypeCrop(String sectionName){
+        String path = "baseItems." + sectionName + ".obtainingInfo.blockMaterial";
+        if (!super.checkExistence(path)) throw new IllegalArgumentException("ERROR_130: BLOCK MATERIAL PATH REFERENCE IS INVALID");
 
-            // Si no es un bloque que necesitemos manejar, finaliza la ejecución
-            if (!(isBaseBlockItem.contains(block.getType()))) return;
+        String blockMaterialName = super.getPlainString(path);
+        Material materialItem = Material.getMaterial(blockMaterialName);
+        this.itemsCropBlocksMap.put(materialItem, sectionName);
 
+        path = "baseItems." + sectionName + ".obtainingInfo.dropItems";
+        List<String> dropItemsList = super.getStringList(path);
+        this.blockCropDropItemsNameMap.put(materialItem, dropItemsList);
+    }
 
-            BlockData dataBlock = block.getBlockData();
-            Ageable ageable = (Ageable) dataBlock;
+    private void loadBaseItems(){
+        if (!super.checkExistence("baseItems")) throw new IllegalArgumentException("ERROR_140: BASE ITEMS SECTION IS NULL");
+        Set<String> sectionsName = super.getSections("baseItems");
 
-            if (ageable.getAge() < ageable.getMaximumAge()) {
-                event.getPlayer().sendMessage(plugin.name + ChatColor.WHITE + "Aun no ha crecido lo suficiente");
-                event.setCancelled(true);
-                return;
+        for (String sectionName : sectionsName){
+            String path = "baseItems." + sectionName + ".obtainingInfo";
+            if (!super.checkExistence(path + ".type")) continue;
+
+            if (super.getPlainString(path + ".type").equals("crop")) {
+                this.loadBaseItemsTypeCrop(sectionName);
             }
-
-            Player player = event.getPlayer();
-
-            // Cancelamos el dropeo de items
-            event.setDropItems(false);
-
-            /* Ejecución de la entrega del item sobre el hilo principal */
-            new BukkitRunnable(){
-                @Override
-                public void run(){
-                    ItemStack item = mapBlockDropItem.get(block.getType());
-
-                    int randomNum = getRandomNumber(1, 4);
-                    item.setAmount(randomNum);
-
-                    // Drop del item base
-                    player.getWorld().dropItem(player.getLocation(), item);
-                    player.sendMessage(plugin.name + ChatColor.WHITE + "Haz recolectado " + randomNum + " nuevas unidades");
-
-                    // Drop de semillas
-                    ItemStack seeds = new ItemStack(Material.BEETROOT_SEEDS, getRandomNumber(0, 2));
-                    player.getWorld().dropItem(player.getLocation(), seeds);
-                    }
-            }.run();
         }
     }
 
-    public BaseItemBreakEvent(UNDrugs plugin){
-        BaseItemBreakEvent.plugin = plugin;
+    private int getRandomAmount(String option){
+        String[] rangeNum = option.split("-");
+        int min = Integer.parseInt(rangeNum[0]), max = Integer.parseInt(rangeNum[1]);
 
-        // Lista de bloques a analizar
-        isBaseBlockItem.push(Material.BEETROOTS);
-
-        // Items a entregar
-        mapBlockDropItem.put(Material.BEETROOTS, BaseItemCraft.cogote);
+        return (int) (Math.floor(Math.random() * (max - min + 1)) + min);
     }
+
+    private void dropItems(Block block, Player player){
+        Material blockType = block.getType();
+
+        if (!this.blockCropDropItemsNameMap.containsKey(blockType)) return;
+        for (String line : this.blockCropDropItemsNameMap.get(blockType)){
+            ItemStack dropItem;
+            String[] options = line.split(";");
+            int itemStackNum = this.getRandomAmount(options[1]);
+
+            if (itemStackNum == 0) continue;
+
+            // Base Item
+            if (options[0].equals("self")){
+                String sectionName = this.itemsCropBlocksMap.get(blockType);
+
+                if (!BaseItem.baseItemMap.containsKey(sectionName)) throw new IllegalArgumentException("ERROR_150: BASE ITEM NON EXIST WITH THAT NAME");
+                dropItem = BaseItem.baseItemMap.get(sectionName);
+
+                // Send player message
+                ItemMeta dropItemMeta = dropItem.getItemMeta();
+                String displayName = "";
+                if (dropItemMeta != null) {
+                    displayName = dropItemMeta.getDisplayName();
+                }
+
+                String message = MessagesConfig.getMessage("validCrop").replaceAll("%stackAmountDrop%", String.valueOf(itemStackNum)).replaceAll("%itemDisplayName%", displayName);
+                player.sendMessage(message);
+            }
+            // Additional items
+            else {
+                Material itemMaterial = Material.getMaterial(options[0]);
+                if (itemMaterial == null) continue;
+
+                dropItem = new ItemStack(itemMaterial);
+            }
+
+            // Set the stack
+            if (dropItem.getItemMeta() == null) continue;
+            dropItem.setAmount(itemStackNum);
+
+            // Drop item in block location
+            player.getWorld().dropItem(block.getLocation(), dropItem);
+        }
+    }
+
+    @EventHandler
+    public void getBaseItemCrop(BlockBreakEvent event){
+        Block block = event.getBlock();
+        Material blockType = block.getType();
+
+        if (!this.itemsCropBlocksMap.containsKey(blockType)) return;
+
+        Player player = event.getPlayer();
+        BlockData blockData = block.getBlockData();
+        Ageable ageable = (Ageable) blockData;
+
+        if (ageable.getAge() < ageable.getMaximumAge()){
+            player.sendMessage(MessagesConfig.getMessage("insufficientAgeCrop"));
+            event.setCancelled(true);
+            return;
+        }
+
+        event.setDropItems(false);
+        this.dropItems(block, player);
+    }
+
 }

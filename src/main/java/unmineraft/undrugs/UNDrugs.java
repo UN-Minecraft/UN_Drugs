@@ -5,14 +5,19 @@ import commands.DrugsCommand;
 import commands.UnDrugsCommands;
 import events.BaseItemBreakEvent;
 import events.CraftDrugEvent;
-import events.DrugsEvent;
+import events.DrugsActions;
+import events.PlayerClearEffects;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import unmineraft.undrugs.consumable.Drugs;
-import unmineraft.undrugs.craftBase.BaseItemCraft;
+import unmineraft.undrugs.items.builder.RecipeBuilder;
+import unmineraft.undrugs.items.consumable.DrugItem;
+import unmineraft.undrugs.items.craftBase.BaseItem;
+import unmineraft.undrugs.states.Overdose;
+import unmineraft.undrugs.utilities.MessagesConfig;
+import unmineraft.undrugs.utilities.StrEnchant;
 
 import java.io.File;
 import java.util.Objects;
@@ -20,30 +25,18 @@ import java.util.Objects;
 public final class UNDrugs extends JavaPlugin {
     public String pathConfig;
 
-    PluginDescriptionFile pdfile = getDescription();
-    public String version = ChatColor.GREEN + pdfile.getVersion();
-    public String name = ChatColor.translateAlternateColorCodes('&', "&5[&d\uD83D\uDD25UNDrugs&5]");
+    PluginDescriptionFile pdfile = this.getDescription();
+    public String version;
+    public String name;
 
-    @Override
-    public void onEnable() {
-        String initPluginMessage = name + ChatColor.WHITE + " has been enabled in the version: " + version;
-        Bukkit.getConsoleSender().sendMessage(initPluginMessage);
+    private void updateMetaData(FileConfiguration fileConfiguration){
+        String baseAttribute = this.pdfile.getName();
 
-        this.saveDefaultConfig();
+        String baseString = fileConfiguration.getString("config.pluginDisplayName");
+        if (baseString == null) baseString = baseAttribute;
 
-        BaseItemCraft.buildItem(this);
-
-        Drugs.buildDrugs(this);
-
-        commandRegister();
-        eventsRegister();
-        configRegister();
-    }
-
-    @Override
-    public void onDisable() {
-        String endPluginMessage = name + ChatColor.RED + " has been disabled";
-        Bukkit.getConsoleSender().sendMessage(endPluginMessage);
+        this.name = StrEnchant.replace(baseString, "%pluginName%", baseAttribute);
+        this.version = StrEnchant.applyColors("&a" + this.pdfile.getVersion());
     }
 
     public void commandRegister(){
@@ -54,9 +47,14 @@ public final class UNDrugs extends JavaPlugin {
 
     public void eventsRegister(){
         PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new DrugsEvent(this), this);
+
+        // Initialize events listener
+        pluginManager.registerEvents(new DrugsActions(this), this);
         pluginManager.registerEvents(new BaseItemBreakEvent(this), this);
-        pluginManager.registerEvents(new CraftDrugEvent(this), this);
+        pluginManager.registerEvents(new CraftDrugEvent(), this);
+
+        // Update State of Player
+        pluginManager.registerEvents(new PlayerClearEffects(), this);
     }
 
     public void configRegister(){
@@ -67,5 +65,46 @@ public final class UNDrugs extends JavaPlugin {
             this.getConfig().options().copyDefaults(true);
             saveConfig();
         }
+    }
+
+    public void initPluginConfig(){
+        this.saveDefaultConfig();
+        this.updateMetaData(this.getConfig());
+    }
+
+    @Override
+    public void onEnable() {
+        this.initPluginConfig();
+
+        String initPluginMessage = StrEnchant.applyColors(name + "&f has been enabled in the version: " + this.version);
+        Bukkit.getConsoleSender().sendMessage(initPluginMessage);
+
+        // Load Messages
+        MessagesConfig messagesController = new MessagesConfig(this);
+        messagesController.loadMessages();
+
+        // Charge Overdose Effects
+        Overdose overdoseStatus = new Overdose(this);
+        overdoseStatus.loadDurationEffects();
+        overdoseStatus.loadEffects();
+
+        BaseItem builderBase = new BaseItem(this);
+        builderBase.initItems();
+
+        DrugItem builderDrugs = new DrugItem(this);
+        builderDrugs.initItems();
+
+        RecipeBuilder builderRecipe = new RecipeBuilder(this);
+        builderRecipe.initRecipes();
+
+        commandRegister();
+        eventsRegister();
+        configRegister();
+    }
+
+    @Override
+    public void onDisable() {
+        String endPluginMessage = StrEnchant.applyColors(name + "&c has been disabled");
+        Bukkit.getConsoleSender().sendMessage(endPluginMessage);
     }
 }

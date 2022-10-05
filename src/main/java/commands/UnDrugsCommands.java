@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import unmineraft.undrugs.UNDrugs;
-import unmineraft.undrugs.consumable.Drugs;
+import unmineraft.undrugs.items.consumable.DrugItem;
 
 public class UnDrugsCommands implements CommandExecutor {
     private final UNDrugs plugin;
@@ -33,7 +33,8 @@ public class UnDrugsCommands implements CommandExecutor {
             sender.sendMessage(plugin.name + ChatColor.GREEN + "El plugin a sido recargado correctamente");
 
             /* Para que se efectúen los cambios es necesario volver a construir las drogas */
-            Drugs.buildDrugs(plugin);
+            DrugItem builderDrugs = new DrugItem(this.plugin);
+            builderDrugs.initItems();
 
         } else {
             sender.sendMessage(plugin.name + ChatColor.RED + "El comando no ha sido reconocido");
